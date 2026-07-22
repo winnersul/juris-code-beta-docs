@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Juris Code — Protocolo de Testes Beta</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d1b30; color: #dce6f2; font-family: Arial, sans-serif; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+  header { background: #04203F; padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.14); margin-bottom: 30px; }
+  h1 { font-size: 32px; margin-bottom: 10px; color: #eaf2fc; }
+  h2 { font-size: 24px; color: #6ea8e8; margin-top: 40px; margin-bottom: 20px; border-bottom: 2px solid #004A9F; padding-bottom: 10px; }
+  .module { background: #112340; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .test-case { background: #0d1b30; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 15px; margin-bottom: 12px; }
+  .test-id { font-family: 'Courier New', monospace; font-size: 12px; color: #8fa2ba; font-weight: 700; }
+  .test-title { font-size: 14px; font-weight: 600; color: #dce6f2; margin-top: 8px; }
+  .priority { display: inline-block; font-size: 9px; text-transform: uppercase; font-weight: 700; padding: 3px 9px; border-radius: 9999px; margin-top: 8px; }
+  .priority.alta { background: rgba(220,38,38,0.1); color: #f87171; }
+  .priority.media { background: rgba(255,193,7,0.16); color: #fbbf24; }
+  .priority.baixa { background: rgba(40,167,69,0.1); color: #4ade80; }
+  .test-content { margin-top: 12px; display: none; }
+  .test-case.open .test-content { display: block; }
+  .test-case.open .toggle-icon { transform: rotate(180deg); }
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #8fa2ba; margin-top: 12px; margin-bottom: 6px; }
+  .steps, .criteria { font-size: 12px; color: #b8c5d8; margin-left: 20px; }
+  .steps li, .criteria li { margin-bottom: 6px; }
+  .criteria li:before { content: "✓ "; color: #4ade80; font-weight: 700; }
+  textarea { width: 100%; background: #112340; border: 1px solid rgba(255,255,255,0.14); border-radius: 6px; padding: 8px; color: #dce6f2; font-family: Arial, sans-serif; font-size: 12px; min-height: 60px; margin-top: 8px; }
+  .buttons { margin-top: 12px; display: flex; gap: 8px; }
+  button { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); background: transparent; color: #dce6f2; cursor: pointer; font-weight: 700; font-size: 12px; transition: all 0.2s; }
+  button:hover { border-color: #6ea8e8; }
+  button.pass { border-color: #4ade80; background: rgba(40,167,69,0.18); color: #4ade80; }
+  button.fail { border-color: #f87171; background: rgba(220,38,38,0.18); color: #f87171; }
+  button.skip { border-color: #8fa2ba; background: rgba(148,163,184,0.15); color: #8fa2ba; }
+  .progress-bar { background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; margin: 20px 0; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #1A7A8A, #004A9F); transition: width 0.3s; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 30px 0; }
+  .stat-box { background: #112340; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 15px; text-align: center; }
+  .stat-number { font-size: 28px; font-weight: 700; font-family: 'Courier New', monospace; }
+  .stat-label { font-size: 10px; text-transform: uppercase; color: #8fa2ba; margin-top: 8px; }
+  .info-box { background: linear-gradient(135deg, rgba(69,192,212,0.10), rgba(110,168,232,0.08)); border: 1px solid rgba(110,168,232,0.30); border-radius: 8px; padding: 15px; margin-bottom: 20px; font-size: 13px; }
+  .footer { text-align: center; color: #93a5bb; font-size: 11px; margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.14); }
+  .toggle-icon { display: inline-block; transition: transform 0.3s; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Juris Code V8 — <span style="color: #6ea8e8;">Protocolo de Testes</span></h1>
+  <p style="color: #93a5bb; margin-top: 10px;">40 cenários de teste estruturados em 8 módulos | 21/07–10/08/2026</p>
+</header>
+
+<div class="container">
+
+  <div class="info-box">
+    Seu escritório tem <strong>150 consultas de IA para todo o período</strong> — os testes de IA deste protocolo consomem cerca de 25 delas. Suficiente, e você pode pedir mais se precisar.
+  </div>
+
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-number" id="passCount">0</div>
+      <div class="stat-label">Aprovados</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="failCount">0</div>
+      <div class="stat-label">Reprovados</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="skipCount">0</div>
+      <div class="stat-label">Pulados</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="pendingCount">40</div>
+      <div class="stat-label">Pendentes</div>
+    </div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+  </div>
+
+  <!-- MÓDULO 01 -->
+  <h2>Módulo 01 — Autenticação & Acesso</h2>
+  <div class="module">
+    <div class="test-case" onclick="this.classList.toggle('open')">
+      <div><span class="test-id">TC-001</span> <span class="test-title">Login com credenciais válidas <span class="toggle-icon">▼</span></span>
+        <span class="priority alta">Alta</span></div>
+      <div class="test-content">
+        <div class="section-label">Passos</div>
+        <ol class="steps">
+          <li>Abra juriscode.com.br</li>
+          <li>Informe o e-mail e a senha que você recebeu no WhatsApp</li>
+          <li>Clique em "Entrar"</li>
+        </ol>
+        <div class="section-label">Critérios</div>
+        <ul class="criteria">
+          <li>Redirecionamento para Dashboard em menos de 3s</li>
+          <li>Nome do usuário aparece no cabeçalho</li>
+          <li>Nenhuma mensagem de erro</li>
+        </ul>
+        <div class="buttons">
+          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
+          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
+          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        </div>
+        <textarea placeholder="Anotações..." onchange="saveNotes(this)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" onclick="this.classList.toggle('open')">
+      <div><span class="test-id">TC-002</span> <span class="test-title">Login com senha incorreta <span class="toggle-icon">▼</span></span>
+        <span class="priority alta">Alta</span></div>
+      <div class="test-content">
+        <div class="section-label">Passos</div>
+        <ol class="steps">
+          <li>Tente fazer login com senha errada</li>
+          <li>Observe a resposta</li>
+        </ol>
+        <div class="section-label">Critérios</div>
+        <ul class="criteria">
+          <li>Mensagem de erro clara aparece</li>
+          <li>Não redireciona para área interna</li>
+          <li>Campo de senha é limpo</li>
+        </ul>
+        <div class="buttons">
+          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
+          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
+          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        </div>
+        <textarea placeholder="Anotações..." onchange="saveNotes(this)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" onclick="this.classList.toggle('open')">
+      <div><span class="test-id">TC-003</span> <span class="test-title">Persistência de sessão (recarregar página) <span class="toggle-icon">▼</span></span>
+        <span class="priority media">Média</span></div>
+      <div class="test-content">
+        <div class="section-label">Passos</div>
+        <ol class="steps">
+          <li>Após login, pressione F5</li>
+          <li>Feche a aba e abra novamente</li>
+        </ol>
+        <div class="section-label">Critérios</div>
+        <ul class="criteria">
+          <li>Continua logado após F5</li>
+          <li>Mantém sessão ao reabrir</li>
+        </ul>
+        <div class="buttons">
+          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
+          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
+          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        </div>
+        <textarea placeholder="Anotações..." onchange="saveNotes(this)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" onclick="this.classList.toggle('open')">
+      <div><span class="test-id">TC-004</span> <span class="test-title">Logout e limpeza de sessão <span class="toggle-icon">▼</span></span>
+        <span class="priority media">Média</span></div>
+      <div class="test-content">
+        <div class="section-label">Passos</div>
+        <ol class="steps">
+          <li>Clique em "Sair"</li>
+          <li>Tente acessar uma página interna diretamente</li>
+        </ol>
+        <div class="section-label">Critérios</div>
+        <ul class="criteria">
+          <li>Redireciona para login após sair</li>
+          <li>Acesso direto também redireciona</li>
+        </ul>
+        <div class="buttons">
+          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
+          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
+          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        </div>
+        <textarea placeholder="Anotações..." onchange="saveNotes(this)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" onclick="this.classList.toggle('open')">
+      <div><span class="test-id">TC-005</span> <span class="test-title">Acesso em mobile / tela pequena <span class="toggle-icon">▼</span></span>
+        <span class="priority baixa">Baixa</span></div>
+      <div class="test-content">
+        <div class="section-label">Passos</div>
+        <ol class="steps">
+          <li>Abra DevTools (F12) e selecione "iPhone 12 Pro"</li>
+          <li>Tente fazer login e navegar</li>
+        </ol>
+        <div class="section-label">Critérios</div>
+        <ul class="criteria">
+          <li>Tela de login legível no mobile</li>
+          <li>Botões com tamanho adequado para toque</li>
+        </ul>
+        <div class="buttons">
+          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
+          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
+          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        </div>
+        <textarea placeholder="Anotações..." onchange="saveNotes(this)"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- MÓDULO 02 -->
+  <h2>Módulo 02 — Copiloto Jurídico IA (5 testes)</h2>
+  <div class="module">
+    <p style="color: #93a5bb; font-size: 13px; margin-bottom: 15px;">
+      Teste a qualidade das respostas da IA para diferentes perguntas jurídicas. Cada teste consome alguns pontos de sua cota de 150 consultas.
+    </p>
+    <div class="test-case" onclick="this.classList.toggle('open')">
+      <div><span class="test-id">TC-006</span> <span class="test-title">Pergunta jurídica básica (civil) <span class="toggle-icon">▼</span></span>
+        <span class="priority alta">Alta</span></div>
+      <div class="test-content">
+        <div class="section-label">Pergunta a digitar</div>
+        <p style="font-style: italic; color: #45c0d4; margin: 8px 0; padding-left: 15px;">
+          "Qual o prazo prescricional para ação de cobrança de honorários advocatícios?"
+        </p>
+        <div class="section-label">Critérios</div>
+        <ul class="criteria">
+          <li>Cita Art. 206, §5º, II do CC/2002 (5 anos)</li>
+          <li>Menciona fonte legal ou dispositivo</li>
+          <li>Resposta em menos de 30s</li>
+          <li>Linguagem técnica e precisa</li>
+        </ul>
+        <div class="buttons">
+          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
+          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
+          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        </div>
+        <textarea placeholder="Cole a resposta da IA ou descreva o resultado..." onchange="saveNotes(this)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" onclick="this.classList.toggle('open')">
+      <div><span class="test-id">TC-007</span> <span class="test-title">Pergunta trabalhista com cálculo <span class="toggle-icon">▼</span></span>
+        <span class="priority alta">Alta</span></div>
+      <div class="test-content">
+        <div class="section-label">Pergunta a digitar</div>
+        <p style="font-style: italic; color: #45c0d4; margin: 8px 0; padding-left: 15px;">
+          "Meu cliente trabalhou 3 anos, salário de R$ 4.500, foi demitido sem justa causa. Calcule as verbas rescisórias."
+        </p>
+        <div class="section-label">Critérios</div>
+        <ul class="criteria">
+          <li>Ativa o agente Perito Calculista</li>
+          <li>Lista verbas separadamente</li>
+          <li>Valores calculados com base informada</li>
+          <li>Mostra raciocínio do cálculo</li>
+        </ul>
+        <div class="buttons">
+          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
+          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
+          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        </div>
+        <textarea placeholder="Descreva o resultado..." onchange="saveNotes(this)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" onclick="this.classList.toggle('open')">
+      <div><span class="test-id">TC-008</span> <span class="test-title">Continuidade de conversa (contexto) <span class="toggle-icon">▼</span></span>
+        <span class="priority alta">Alta</span></div>
+      <div class="test-content">
+        <div class="section-label">Sequência de perguntas</div>
+        <p style="font-style: italic; color: #45c0d4; margin: 8px 0; padding-left: 15px;">
+          1. "O que é rescisão indireta?"<br>
+          2. "Quais são os requisitos?"<br>
+          3. "E o que o TST entende sobre isso?"
+        </p>
+        <div class="section-label">Critérios</div>
+        <ul class="criteria">
+          <li>IA mantém tema "rescisão indireta"</li>
+          <li>Não perde contexto entre mensagens</li>
+          <li>Resposta 3 cita TST sobre rescisão</li>
+        </ul>
+        <div class="buttons">
+          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
+          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
+          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        </div>
+        <textarea placeholder="Contexto foi mantido?" onchange="saveNotes(this)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" onclick="this.classList.toggle('open')">
+      <div><span class="test-id">TC-009</span> <span class="test-title">Velocidade de resposta <span class="toggle-icon">▼</span></span>
+        <span class="priority media">Média</span></div>
+      <div class="test-content">
+        <div class="section-label">Procedimento</div>
+        <ol class="steps">
+          <li>Envie 5 perguntas diferentes</li>
+          <li>Cronometre cada resposta</li>
+        </ol>
+        <div class="section-label">Critérios</div>
+        <ul class="criteria">
+          <li>Média de resposta abaixo de 20s</li>
+          <li>Nenhuma resposta ultrapassa 60s</li>
+          <li>Sem timeout ou erro de conexão</li>
+        </ul>
+        <div class="buttons">
+          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
+          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
+          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        </div>
+        <textarea placeholder="Tempos: P1: __s | P2: __s | P3: __s | P4: __s | P5: __s" onchange="saveNotes(this)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" onclick="this.classList.toggle('open')">
+      <div><span class="test-id">TC-010</span> <span class="test-title">Pergunta fora do escopo jurídico <span class="toggle-icon">▼</span></span>
+        <span class="priority baixa">Baixa</span></div>
+      <div class="test-content">
+        <div class="section-label">Pergunta a digitar</div>
+        <p style="font-style: italic; color: #45c0d4; margin: 8px 0; padding-left: 15px;">
+          "Qual a melhor receita de bolo de cenoura?"
+        </p>
+        <div class="section-label">Critérios</div>
+        <ul class="criteria">
+          <li>IA informa que atua apenas em direito</li>
+          <li>Sugere pergunta jurídica alternativa</li>
+          <li>Não inventa resposta culinária</li>
+        </ul>
+        <div class="buttons">
+          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
+          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
+          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        </div>
+        <textarea placeholder="Descreva a resposta..." onchange="saveNotes(this)"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- MÓDULOS RESTANTES — RESUMIDOS -->
+  <h2>Módulo 03 — Agentes Especializados (5 testes)</h2>
+  <div class="module" style="color: #93a5bb; font-size: 13px;">
+    <p>TC-011 até TC-015: Teste os 5 agentes (Julgador, Doutrinador, Estrategista, Redator, Perito) com perguntas específicas que ativem cada um.</p>
+    <p style="margin-top: 12px;">
+      <strong>Exemplo TC-011 (Julgador):</strong> "Como juiz, analise: meu cliente foi demitido sem as 3 advertências necessárias. Quais são os pontos fortes e fracos?" — Deve usar tom imparcial, citar CLT Art. 482.
+    </p>
+  </div>
+
+  <h2>Módulo 04 — Gestão de Demandas (6 testes)</h2>
+  <div class="module" style="color: #93a5bb; font-size: 13px;">
+    <p>TC-016 até TC-021: Teste criar, editar, filtrar e validar demandas. Checklist: formulário salva, filtros funcionam, exclusão pede confirmação, campos obrigatórios são validados.</p>
+  </div>
+
+  <h2>Módulo 05 — Gestão de Clientes (4 testes)</h2>
+  <div class="module" style="color: #93a5bb; font-size: 13px;">
+    <p>TC-022 até TC-025: Cadastre clientes PF e PJ, busque por nome/CPF/CNPJ, vincule a demanda. Validar se dados persistem.</p>
+  </div>
+
+  <h2>Módulo 06 — Honorários OAB (5 testes)</h2>
+  <div class="module" style="color: #93a5bb; font-size: 13px;">
+    <p>TC-026 até TC-030: Consulte honorários de 5 UFs diferentes (RS, SP, CE, SC, NACIONAL). Verifique se retorna valor ou percentual conforme estado. Teste cobertura de todas as 27 UFs.</p>
+  </div>
+
+  <h2>Módulo 07 — Documentos & Ingestão IA (4 testes)</h2>
+  <div class="module" style="color: #93a5bb; font-size: 13px;">
+    <p>TC-031 até TC-034: Faça upload de PDF, verifique processamento, consulte IA com base no documento, teste rejeição de formatos inválidos, teste OCR de PDF escaneado.</p>
+  </div>
+
+  <h2>Módulo 08 — Dashboard & Kanban (4 testes)</h2>
+  <div class="module" style="color: #93a5bb; font-size: 13px;">
+    <p>TC-035 até TC-040: Teste carregamento do Dashboard, mova cards no Kanban, verifique se métricas refletem dados reais, avalie usabilidade geral da plataforma.</p>
+  </div>
+
+  <div class="footer">
+    <strong>Juris Code V8 — Protocolo de Testes Beta</strong><br>
+    21/07–10/08/2026 | Contato: suporte@juriscode.com.br<br>
+    <br>
+    💡 <strong>Dica:</strong> Salve esta página (Ctrl+S) para manter seu progresso localmente. Ou envie as anotações via WhatsApp conforme conclui os testes.
+  </div>
+
+</div>
+
+<script>
+function setStatus(btn, status) {
+  const testCase = btn.closest('.test-case');
+  const buttons = testCase.querySelectorAll('button');
+
+  // Remove classes anteriores
+  buttons.forEach(b => b.classList.remove('pass', 'fail', 'skip'));
+
+  // Adiciona nova classe
+  btn.classList.add(status);
+
+  updateStats();
+}
+
+function saveNotes(textarea) {
+  const testCase = textarea.closest('.test-case');
+  const testId = testCase.querySelector('.test-id').textContent;
+  localStorage.setItem('notes_' + testId, textarea.value);
+}
+
+function updateStats() {
+  let pass = 0, fail = 0, skip = 0;
+  document.querySelectorAll('.test-case').forEach(tc => {
+    if (tc.querySelector('button.pass')) pass++;
+    if (tc.querySelector('button.fail')) fail++;
+    if (tc.querySelector('button.skip')) skip++;
+  });
+
+  const total = 40; // Simplificado para 40 (primeiros 10 + resumos)
+  const pending = total - (pass + fail + skip);
+
+  document.getElementById('passCount').textContent = pass;
+  document.getElementById('failCount').textContent = fail;
+  document.getElementById('skipCount').textContent = skip;
+  document.getElementById('pendingCount').textContent = pending;
+
+  const progress = ((pass + fail + skip) / total) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+}
+
+// Restaurar anotações ao carregar
+window.addEventListener('load', function() {
+  document.querySelectorAll('textarea').forEach(ta => {
+    const testId = ta.closest('.test-case').querySelector('.test-id').textContent;
+    const saved = localStorage.getItem('notes_' + testId);
+    if (saved) ta.value = saved;
+  });
+  updateStats();
+});
+</script>
+
+</body>
+</html>

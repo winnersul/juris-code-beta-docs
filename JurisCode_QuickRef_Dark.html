@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <style>
+    @font-face { font-family: 'Trebuchet MS'; src: url('fonts/trebuc.ttf') format('truetype'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Trebuchet MS'; src: url('fonts/trebucit.ttf') format('truetype'); font-weight: 400; font-style: italic; }
+    @font-face { font-family: 'Trebuchet MS'; src: url('fonts/trebucbd.ttf') format('truetype'); font-weight: 700; font-style: normal; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background:#081326; font-family: Arial, sans-serif; }
+  </style>
+</helmet>
+
+<div style="width:960px; min-height:1420px; background:#0d1b30; font-family:Arial,sans-serif; color:#eaf2fc; position:relative; overflow:hidden; border:1px solid rgba(255,255,255,0.10); margin: 0 auto;">
+
+  <!-- HEADER -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:22px 32px 18px; border-bottom:1px solid rgba(255,255,255,0.14); background:#04203F;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span style="font-size:18px; font-weight:700; color:#ffffff;">JURIS CODE</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:#ffffff; font-size:12px; font-weight:700; letter-spacing:0.1em; padding:5px 12px; border-radius:9999px; text-transform:uppercase;">Referência Rápida</span>
+      <span style="background:rgba(201,150,42,0.18); border:1px solid rgba(201,150,42,0.4); color:#f0c869; font-size:12px; font-weight:700; letter-spacing:0.1em; padding:5px 12px; border-radius:9999px; text-transform:uppercase;">Beta V8</span>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div style="padding:22px 32px;">
+
+    <!-- ACCESS -->
+    <div style="background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:16px 20px; margin-bottom:18px;">
+      <div style="font-size:13px; font-weight:700; letter-spacing:0.1em; color:#6ea8e8; text-transform:uppercase; margin-bottom:12px;">
+        Dados de Acesso — Beta Tester
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; font-size:12px; color:#93a5bb; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">URL da Plataforma</label>
+        <div style="font-family:'Courier New',monospace; font-size:13.5px; color:#eaf2fc; font-weight:600; background:#0f2a4a; border-radius:5px; padding:6px 10px; border-left:3px solid #004A9F; line-height:1.4;">juriscode.com.br</div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; font-size:12px; color:#93a5bb; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">E-mail</label>
+        <div style="font-size:13px; color:#b8c5d8; background:#12213a; border-radius:5px; padding:6px 10px; border-left:3px solid #94a3b8; line-height:1.4;">seu e-mail cadastrado (o mesmo do convite)</div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; font-size:12px; color:#93a5bb; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">Senha</label>
+        <div style="font-size:13px; color:#b8c5d8; background:#12213a; border-radius:5px; padding:6px 10px; border-left:3px solid #94a3b8; line-height:1.4;">senha temporária enviada pelo WhatsApp — troque no 1º acesso em Configurações → Perfil</div>
+      </div>
+      <div style="font-size:13px; color:#b8c5d8; background:#12213a; border-radius:5px; padding:6px 10px;">Também funciona: Entrar com Google / Entrar com Microsoft (mesmo e-mail)</div>
+    </div>
+
+    <!-- LIMITS -->
+    <div style="background:linear-gradient(135deg, rgba(69,192,212,0.10), rgba(110,168,232,0.08)); border:1px solid rgba(201,150,42,0.35); border-radius:10px; padding:12px 18px; margin-bottom:18px; font-size:13px; line-height:1.6; color:#b8c5d8;">
+      Seu escritório tem <strong style="color:#e6b95c;">150 consultas de IA para todo o período</strong> (pool compartilhado entre você e seus convidados – o limite é do escritório, não por pessoa) e até <strong style="color:#e6b95c;">3 convidados</strong>.
+    </div>
+
+    <!-- AGENTS -->
+    <div style="background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:16px; margin-bottom:18px;">
+      <div style="font-size:13px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#45c0d4; margin-bottom:12px;">
+        Os 7 Agentes de IA
+      </div>
+      <div style="line-height:1.8; color:#b8c5d8; font-size:12px;">
+        <strong>Julgador:</strong> "analise", "risco", "chance" — avalia imparcialmente pontos fortes/fracos<br>
+        <strong>Doutrinador:</strong> "doutrina", "jurisprudência", "STJ entende" — pesquisa jurisprudencial<br>
+        <strong>Estrategista:</strong> "estratégia", "tese", "como vencer" — plano processual<br>
+        <strong>Redator:</strong> "redija", "elabore", "petição" — gera peças processuais<br>
+        <strong>Perito Calculista:</strong> "calcule", "verbas", "rescisão" — cálculos jurídicos<br>
+        <strong>Revisor:</strong> "revise", "corrija", "verifique" — análise crítica<br>
+        <strong>Explicador:</strong> "modo_simples", "explicar_cliente" — linguagem leiga
+      </div>
+    </div>
+
+    <!-- TIPS -->
+    <div style="background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:16px; margin-bottom:18px;">
+      <div style="font-size:13px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#45c0d4; margin-bottom:12px;">
+        Dicas para Melhores Resultados
+      </div>
+      <ul style="margin:0; padding-left:20px; color:#b8c5d8; font-size:12px; line-height:1.7;">
+        <li><strong>Seja específico:</strong> "Calcule verbas rescisórias de CLT com 3 anos e salário R$4.500" funciona melhor que "calcule rescisão"</li>
+        <li><strong>Envie seus documentos:</strong> Quanto mais peças e contratos, mais personalizado o resultado</li>
+        <li><strong>Itere a conversa:</strong> Pode perguntar de volta: "Aprofunde o ponto 2" ou "Adapte para vara trabalhista"</li>
+        <li><strong>Honorários:</strong> Para consultar honorários OAB, selecione sua UF. CE, SC e PR retornam apenas percentuais</li>
+        <li><strong>Escolha o agente certo:</strong> Redator para peças, Perito para cálculos, Estrategista para tática</li>
+        <li><strong>Feedback:</strong> Anote o que funcionou bem e o que não funcionou para reportar</li>
+      </ul>
+    </div>
+
+    <!-- MODULES -->
+    <div style="background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:16px; margin-bottom:18px;">
+      <div style="font-size:13px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#e6b95c; margin-bottom:12px;">
+        Módulos da Plataforma
+      </div>
+      <div style="font-size:12px; color:#b8c5d8; line-height:1.8;">
+        📎 <strong>Copiloto IA</strong> — Chat jurídico com 7 agentes<br>
+        📂 <strong>Demandas</strong> — Cadastro e acompanhamento de processos<br>
+        👤 <strong>Clientes</strong> — Gestão de clientes PF e PJ<br>
+        💰 <strong>Honorários OAB</strong> — Consulta das tabelas dos 27 estados<br>
+        📄 <strong>Documentos</strong> — Upload de peças para análise da IA<br>
+        📊 <strong>Dashboard</strong> — Visão geral do escritório e Kanban<br>
+        💸 <strong>Financeiro</strong> — Lançamentos de honorários e custas<br>
+        ✍️ <strong>Gerador de Peças</strong> — Peça gerada com dados do processo<br>
+        🔍 <strong>Busca DataJud</strong> — Localiza processo real pelo CNJ<br>
+        📰 <strong>Radar Legislativo</strong> — D.O.U. e fontes oficiais<br>
+        🔔 <strong>Alertas DJE</strong> — Publicações com seu nome
+      </div>
+    </div>
+
+    <!-- FEEDBACK -->
+    <div style="background:linear-gradient(135deg, rgba(69,192,212,0.10), rgba(110,168,232,0.10)); border:1px solid rgba(110,168,232,0.30); border-radius:10px; padding:14px 20px;">
+      <div style="font-size:13px; color:#b8c5d8; line-height:1.5;">
+        <strong style="color:#eaf2fc; display:block; margin-bottom:6px;">Seu feedback é o produto</strong>
+        Reporte bugs, elogios e sugestões via formulário semanal ou direto no WhatsApp. Cada observação molda a versão final do Juris Code.
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="padding:14px 32px 16px; border-top:1px solid rgba(255,255,255,0.14); background:#112340; font-size:11.5px; color:#93a5bb; text-align:center;">
+    <strong style="color:#b8c5d8;">Juris Code V8</strong> · Programa Beta · 21/07–10/08/2026<br>
+    contato@juriscode.com.br · juriscode.com.br<br>
+    Suporte durante o beta: grupo WhatsApp Juris Code Beta
+  </div>
+
+</div>
+
+</x-dc>
+</body>
+</html>
