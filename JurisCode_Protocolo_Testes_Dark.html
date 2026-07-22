@@ -1,419 +1,1761 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juris Code — Protocolo de Testes Beta</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0d1b30; color: #dce6f2; font-family: Arial, sans-serif; line-height: 1.6; }
-  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-  header { background: #04203F; padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.14); margin-bottom: 30px; }
-  h1 { font-size: 32px; margin-bottom: 10px; color: #eaf2fc; }
-  h2 { font-size: 24px; color: #6ea8e8; margin-top: 40px; margin-bottom: 20px; border-bottom: 2px solid #004A9F; padding-bottom: 10px; }
-  .module { background: #112340; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
-  .test-case { background: #0d1b30; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 15px; margin-bottom: 12px; }
-  .test-id { font-family: 'Courier New', monospace; font-size: 12px; color: #8fa2ba; font-weight: 700; }
-  .test-title { font-size: 14px; font-weight: 600; color: #dce6f2; margin-top: 8px; }
-  .priority { display: inline-block; font-size: 9px; text-transform: uppercase; font-weight: 700; padding: 3px 9px; border-radius: 9999px; margin-top: 8px; }
-  .priority.alta { background: rgba(220,38,38,0.1); color: #f87171; }
-  .priority.media { background: rgba(255,193,7,0.16); color: #fbbf24; }
-  .priority.baixa { background: rgba(40,167,69,0.1); color: #4ade80; }
-  .test-content { margin-top: 12px; display: none; }
-  .test-case.open .test-content { display: block; }
-  .test-case.open .toggle-icon { transform: rotate(180deg); }
-  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #8fa2ba; margin-top: 12px; margin-bottom: 6px; }
-  .steps, .criteria { font-size: 12px; color: #b8c5d8; margin-left: 20px; }
-  .steps li, .criteria li { margin-bottom: 6px; }
-  .criteria li:before { content: "✓ "; color: #4ade80; font-weight: 700; }
-  textarea { width: 100%; background: #112340; border: 1px solid rgba(255,255,255,0.14); border-radius: 6px; padding: 8px; color: #dce6f2; font-family: Arial, sans-serif; font-size: 12px; min-height: 60px; margin-top: 8px; }
-  .buttons { margin-top: 12px; display: flex; gap: 8px; }
-  button { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); background: transparent; color: #dce6f2; cursor: pointer; font-weight: 700; font-size: 12px; transition: all 0.2s; }
-  button:hover { border-color: #6ea8e8; }
-  button.pass { border-color: #4ade80; background: rgba(40,167,69,0.18); color: #4ade80; }
-  button.fail { border-color: #f87171; background: rgba(220,38,38,0.18); color: #f87171; }
-  button.skip { border-color: #8fa2ba; background: rgba(148,163,184,0.15); color: #8fa2ba; }
-  .progress-bar { background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; margin: 20px 0; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, #1A7A8A, #004A9F); transition: width 0.3s; }
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 30px 0; }
-  .stat-box { background: #112340; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 15px; text-align: center; }
-  .stat-number { font-size: 28px; font-weight: 700; font-family: 'Courier New', monospace; }
-  .stat-label { font-size: 10px; text-transform: uppercase; color: #8fa2ba; margin-top: 8px; }
-  .info-box { background: linear-gradient(135deg, rgba(69,192,212,0.10), rgba(110,168,232,0.08)); border: 1px solid rgba(110,168,232,0.30); border-radius: 8px; padding: 15px; margin-bottom: 20px; font-size: 13px; }
-  .footer { text-align: center; color: #93a5bb; font-size: 11px; margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.14); }
-  .toggle-icon { display: inline-block; transition: transform 0.3s; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#081326; }
+  ::-webkit-scrollbar { width:9px; height:9px; }
+  ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.30); border-radius:999px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  html, body { height:100%; }
+  .app { display:flex; width:100%; min-height:100vh; background:#0d1b30; font-family:Arial,Helvetica,sans-serif; color:#dce6f2; }
+
+  /* SIDEBAR */
+  nav.sidebar { width:250px; flex-shrink:0; background:#04203F; border-right:1px solid rgba(255,255,255,0.08); min-height:100vh; padding-bottom:20px; position:sticky; top:0; align-self:flex-start; max-height:100vh; overflow-y:auto; }
+  .brand { padding:18px 16px; border-bottom:1px solid rgba(255,255,255,0.12); }
+  .brand-name { font-size:14px; font-weight:700; color:#fff; }
+  .brand-sub { font-size:9.5px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#7fb0e0; margin-top:2px; }
+  .nav-section-label { font-size:9.5px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.4); padding:16px 16px 6px; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:7px 16px; font-size:12px; color:rgba(255,255,255,0.65); text-decoration:none; border-left:2px solid transparent; }
+  .nav-item:hover { color:#fff; background:rgba(255,255,255,0.04); }
+  .nav-num { width:18px; height:18px; border-radius:4px; background:rgba(255,255,255,0.08); font-size:9px; font-weight:700; color:#7fb0e0; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'Courier New',monospace; }
+  .sidebar-progress { padding:0 16px; }
+  .progress-track { background:rgba(255,255,255,0.1); height:4px; border-radius:2px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,#1A7A8A,#004A9F); border-radius:2px; width:0%; transition:width 0.3s; }
+  .progress-caption { font-size:9.5px; color:rgba(255,255,255,0.45); margin-top:6px; text-align:center; }
+
+  /* MAIN */
+  main { flex:1; min-width:0; }
+  .main-inner { max-width:900px; margin:0 auto; padding:40px 48px 90px; }
+  .eyebrow { font-size:10px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#45c0d4; margin-bottom:10px; }
+  h1 { font-size:32px; font-weight:700; line-height:1.18; margin:0 0 12px; color:#eaf2fc; }
+  h1 span { color:#6ea8e8; }
+  .lede { font-size:14px; color:#93a5bb; max-width:600px; line-height:1.65; }
+  .chips { display:flex; gap:12px; margin-top:18px; flex-wrap:wrap; }
+  .chip { display:flex; align-items:center; gap:6px; background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:6px 12px; font-size:11px; color:#b8c5d8; }
+  .chip strong { color:#eaf2fc; }
+  .access-line { font-size:12px; color:#93a5bb; margin-top:10px; }
+  .access-line strong { color:#b8c5d8; }
+
+  .beta-banner { background:rgba(230,185,92,0.10); border:1px solid rgba(201,150,42,0.35); border-radius:10px; padding:14px 18px; margin:26px 0; font-size:13px; color:#b8c5d8; line-height:1.6; }
+  .beta-banner strong { color:#e6b95c; }
+
+  .howto-box { background:linear-gradient(135deg, rgba(69,192,212,0.10), rgba(110,168,232,0.08)); border:1px solid rgba(110,168,232,0.28); border-radius:10px; padding:18px 22px; margin-bottom:26px; font-size:12.5px; color:#b8c5d8; line-height:1.7; }
+  .howto-box .howto-title { font-size:13px; font-weight:700; color:#eaf2fc; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .howto-box ol { margin:0; padding-left:20px; }
+  .howto-box li { margin-bottom:4px; }
+
+  .summary-box { background:linear-gradient(135deg, rgba(69,192,212,0.08), rgba(110,168,232,0.08)); border:1px solid rgba(110,168,232,0.28); border-radius:12px; padding:22px; margin-bottom:20px; }
+  .summary-title { font-size:13.5px; font-weight:700; color:#eaf2fc; margin-bottom:14px; }
+  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .stat { text-align:center; }
+  .stat-num { font-size:26px; font-weight:700; font-family:'Courier New',monospace; }
+  .stat-num.pass { color:#4ade80; }
+  .stat-num.fail { color:#f87171; }
+  .stat-num.skip { color:#8fa2ba; }
+  .stat-num.pending { color:#e6b95c; }
+  .stat-label { font-size:9.5px; color:#93a5bb; text-transform:uppercase; letter-spacing:0.08em; margin-top:2px; }
+  .stat-glyph { font-size:13px; margin-top:6px; opacity:0.85; }
+  .stat-glyph.pass { color:#4ade80; }
+  .stat-glyph.fail { color:#f87171; }
+  .stat-glyph.skip { color:#8fa2ba; }
+  .stat-glyph.pending { color:#e6b95c; }
+
+  .export-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:36px; }
+  .export-bar button, .tester-name input { font-family:inherit; }
+  .btn-export { background:#112340; border:1px solid rgba(110,168,232,0.4); color:#b8c5d8; font-size:12px; font-weight:600; padding:9px 16px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:6px; }
+  .btn-export:hover { border-color:#6ea8e8; color:#eaf2fc; }
+  .btn-export.primary { background:linear-gradient(135deg,#1A7A8A,#004A9F); border:none; color:#fff; }
+  .tester-name { margin-bottom:18px; }
+  .tester-name label { font-size:11px; color:#93a5bb; display:block; margin-bottom:5px; text-transform:uppercase; letter-spacing:0.08em; }
+  .tester-name input { background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:8px 12px; color:#eaf2fc; font-size:13px; width:280px; max-width:100%; }
+
+  /* MODULES */
+  .module-section { margin-bottom:48px; scroll-margin-top:24px; }
+  .module-header { display:flex; align-items:flex-start; gap:16px; margin-bottom:22px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.14); }
+  .module-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'Courier New',monospace; font-weight:700; font-size:15px; }
+  .module-info { flex:1; }
+  .module-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#8fa2ba; margin-bottom:3px; font-family:'Courier New',monospace; }
+  .module-title { font-size:20px; font-weight:700; color:#eaf2fc; margin-bottom:3px; }
+  .module-desc { font-size:13px; color:#93a5bb; }
+  .module-count { text-align:center; background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:6px 14px; flex-shrink:0; }
+  .count-num { font-size:17px; font-weight:700; font-family:'Courier New',monospace; }
+  .count-label { font-size:8.5px; color:#8fa2ba; text-transform:uppercase; letter-spacing:0.08em; }
+  .module-footer-hint { margin-top:14px; font-size:12px; color:#93a5bb; background:#112340; border:1px dashed rgba(255,255,255,0.14); border-radius:8px; padding:10px 14px; }
+
+  /* TEST CASE */
+  .test-case { background:#0d1b30; border:1px solid rgba(255,255,255,0.14); border-radius:10px; margin-bottom:10px; overflow:hidden; }
+  .tc-head { display:flex; align-items:center; gap:12px; padding:13px 16px; cursor:pointer; flex-wrap:wrap; }
+  .tc-id { font-family:'Courier New',monospace; font-size:10px; font-weight:700; color:#8fa2ba; width:54px; flex-shrink:0; }
+  .tc-title { font-size:13px; font-weight:600; flex:1; color:#dce6f2; min-width:140px; }
+  .priority { font-size:9px; font-weight:700; padding:3px 9px; border-radius:9999px; letter-spacing:0.06em; text-transform:uppercase; flex-shrink:0; }
+  .priority.alta { background:rgba(220,38,38,0.1); color:#f87171; }
+  .priority.media { background:rgba(255,193,7,0.16); color:#fbbf24; }
+  .priority.baixa { background:rgba(40,167,69,0.1); color:#4ade80; }
+  .tc-buttons { display:flex; gap:10px; flex-shrink:0; }
+  .btn-wrap { display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .btn-eval { width:24px; height:24px; border-radius:50%; border:2px solid rgba(148,163,184,0.35); background:transparent; cursor:pointer; font-size:10px; display:flex; align-items:center; justify-content:center; font-family:inherit; }
+  .btn-eval.btn-pass { color:#4ade80; }
+  .btn-eval.btn-fail { color:#f87171; }
+  .btn-eval.btn-skip { color:#8fa2ba; }
+  .btn-eval.is-active.btn-pass { border-color:#4ade80; background:rgba(40,167,69,0.18); }
+  .btn-eval.is-active.btn-fail { border-color:#f87171; background:rgba(220,38,38,0.18); }
+  .btn-eval.is-active.btn-skip { border-color:#8fa2ba; background:rgba(148,163,184,0.15); }
+  .btn-label { font-size:8px; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.04em; }
+  .toggle-icon { font-size:11px; color:#8fa2ba; transition:transform 0.2s; flex-shrink:0; }
+  .test-case.open .toggle-icon { transform:rotate(180deg); }
+  .tc-body { display:none; padding:0 16px 16px; border-top:1px solid rgba(255,255,255,0.14); padding-top:14px; margin:0 16px; }
+  .test-case.open .tc-body { display:block; }
+  .fields-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:12px; }
+  .field-label { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#8fa2ba; margin-bottom:5px; }
+  .field-value { font-size:12.5px; color:#b8c5d8; line-height:1.5; }
+  .section-label { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#8fa2ba; margin-bottom:6px; margin-top:8px; }
+  .steps { margin-bottom:4px; }
+  .step { font-size:12px; color:#b8c5d8; padding:4px 0 4px 26px; position:relative; line-height:1.5; }
+  .step:before { content: counter(step-counter); counter-increment: step-counter; position:absolute; left:0; top:4px; width:18px; height:18px; border-radius:50%; background:rgba(148,163,184,0.14); border:1px solid rgba(148,163,184,0.35); color:#8fa2ba; font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center; font-family:'Courier New',monospace; }
+  .steps { counter-reset: step-counter; }
+  .step.quote { color:#45c0d4; font-style:italic; }
+  .step.quote:before { content:"❝"; background:rgba(69,192,212,0.16); border-color:rgba(69,192,212,0.45); color:#45c0d4; }
+  .criteria-box { margin-top:12px; background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.35); border-radius:8px; padding:10px 12px; }
+  .crit-label { color:#4ade80; margin-top:0; }
+  .crit { display:flex; align-items:flex-start; gap:7px; font-size:12px; color:#b8c5d8; margin-bottom:4px; }
+  .crit-check { color:#4ade80; font-weight:700; flex-shrink:0; }
+  textarea.notes { width:100%; background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:8px 12px; font-family:inherit; font-size:12px; color:#dce6f2; resize:vertical; min-height:56px; outline:none; margin-top:12px; }
+
+  .footer { text-align:center; color:#93a5bb; font-size:11px; margin-top:50px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.14); }
+
+  @media (max-width: 860px) {
+    .app { flex-direction:column; }
+    nav.sidebar { width:100%; min-height:auto; position:static; max-height:none; }
+    .main-inner { padding:24px 18px 60px; }
+    .stats-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+    .fields-grid { grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
+<div class="app">
 
-<header>
-  <h1>Juris Code V8 — <span style="color: #6ea8e8;">Protocolo de Testes</span></h1>
-  <p style="color: #93a5bb; margin-top: 10px;">40 cenários de teste estruturados em 8 módulos | 21/07–10/08/2026</p>
-</header>
-
-<div class="container">
-
-  <div class="info-box">
-    Seu escritório tem <strong>150 consultas de IA para todo o período</strong> — os testes de IA deste protocolo consomem cerca de 25 delas. Suficiente, e você pode pedir mais se precisar.
-  </div>
-
-  <div class="stats">
-    <div class="stat-box">
-      <div class="stat-number" id="passCount">0</div>
-      <div class="stat-label">Aprovados</div>
+  <nav class="sidebar">
+    <div class="brand">
+      <div class="brand-name">JURIS CODE</div>
+      <div class="brand-sub">Protocolo de Testes Beta</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-number" id="failCount">0</div>
-      <div class="stat-label">Reprovados</div>
+    <div class="nav-section-label">Módulos</div>
+    <a href="#auth" class="nav-item"><span class="nav-num">01</span><span>Autenticação &amp; Acesso</span></a><a href="#copiloto" class="nav-item"><span class="nav-num">02</span><span>Copiloto Jurídico IA</span></a><a href="#agentes" class="nav-item"><span class="nav-num">03</span><span>Agentes de IA Especializados</span></a><a href="#demandas" class="nav-item"><span class="nav-num">04</span><span>Gestão de Demandas</span></a><a href="#clientes" class="nav-item"><span class="nav-num">05</span><span>Gestão de Clientes</span></a><a href="#honorarios" class="nav-item"><span class="nav-num">06</span><span>Honorários OAB — 27 Estados</span></a><a href="#documentos" class="nav-item"><span class="nav-num">07</span><span>Documentos &amp; Ingestão de IA</span></a><a href="#dashboard" class="nav-item"><span class="nav-num">08</span><span>Dashboard &amp; Kanban</span></a>
+    <div class="nav-section-label">Progresso</div>
+    <div class="sidebar-progress">
+      <div class="progress-track"><div class="progress-fill" id="sidebarProgressFill"></div></div>
+      <div class="progress-caption"><span id="sidebarDone">0</span> de 40 testes concluídos</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-number" id="skipCount">0</div>
-      <div class="stat-label">Pulados</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-number" id="pendingCount">40</div>
-      <div class="stat-label">Pendentes</div>
-    </div>
-  </div>
+  </nav>
 
-  <div class="progress-bar">
-    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-  </div>
+  <main>
+    <div class="main-inner">
 
-  <!-- MÓDULO 01 -->
-  <h2>Módulo 01 — Autenticação & Acesso</h2>
-  <div class="module">
-    <div class="test-case" onclick="this.classList.toggle('open')">
-      <div><span class="test-id">TC-001</span> <span class="test-title">Login com credenciais válidas <span class="toggle-icon">▼</span></span>
-        <span class="priority alta">Alta</span></div>
-      <div class="test-content">
-        <div class="section-label">Passos</div>
-        <ol class="steps">
-          <li>Abra juriscode.com.br</li>
-          <li>Informe o e-mail e a senha que você recebeu no WhatsApp</li>
-          <li>Clique em "Entrar"</li>
+      <div class="eyebrow">Juris Code V8 · Beta Testing</div>
+      <h1>Protocolo de <span>Testes</span> Estruturado</h1>
+      <div class="lede">Roteiro completo com 40 cenários de teste distribuídos em 8 módulos. Para cada cenário: execute os passos, verifique os critérios de aprovação e marque o resultado.</div>
+      <div class="chips">
+        <div class="chip"><strong>40</strong>&nbsp;cenários de teste</div>
+        <div class="chip"><strong>20 dias</strong>&nbsp;· 21/07–10/08/2026</div>
+        <div class="chip">Prioridade&nbsp;<strong>Alta · Média · Baixa</strong></div>
+      </div>
+      <div class="access-line">URL: <strong>juriscode.com.br</strong></div>
+      <div class="access-line">Use o e-mail e a senha individuais que você recebeu no WhatsApp</div>
+
+      <div class="beta-banner">
+        Seu escritório tem <strong>150 consultas de IA</strong> para todo o período — os testes de IA deste protocolo consomem <strong>~25 delas</strong>. Sem pânico: é o suficiente, e dá para pedir mais se precisar (<strong>winnersul@gmail.com</strong>).
+      </div>
+
+      <div class="howto-box">
+        <div class="howto-title">📋 Como usar este formulário</div>
+        <ol>
+          <li>Clique no título de cada teste para abrir os passos e critérios.</li>
+          <li>Execute os passos na plataforma normalmente.</li>
+          <li>Marque o resultado: <strong style="color:#4ade80;">✓ Aprovado</strong>, <strong style="color:#f87171;">✗ Reprovado</strong> ou <strong style="color:#8fa2ba;">⊘ Pulado</strong>.</li>
+          <li>Escreva observações no campo de anotações sempre que notar algo relevante (mesmo em testes aprovados).</li>
+          <li>Seu progresso fica salvo automaticamente neste navegador. Ao final (ou quando quiser), clique em <strong>"Exportar Resultados"</strong> abaixo e envie o arquivo baixado no grupo do WhatsApp ou por e-mail.</li>
         </ol>
-        <div class="section-label">Critérios</div>
-        <ul class="criteria">
-          <li>Redirecionamento para Dashboard em menos de 3s</li>
-          <li>Nome do usuário aparece no cabeçalho</li>
-          <li>Nenhuma mensagem de erro</li>
-        </ul>
-        <div class="buttons">
-          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
-          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
-          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+      </div>
+
+      <div class="tester-name">
+        <label for="testerName">Seu nome (aparece no relatório exportado)</label>
+        <input type="text" id="testerName" placeholder="Ex: Dorine Loth Soares Garcia" onchange="saveTesterName(this.value)">
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-title">Resumo de Progresso — Atualiza em tempo real</div>
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-num pass" id="passCount">0</div>
+            <div class="stat-label">Aprovados</div>
+            <div class="stat-glyph pass">✓ = Aprovado</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num fail" id="failCount">0</div>
+            <div class="stat-label">Reprovados</div>
+            <div class="stat-glyph fail">✗ = Reprovado</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num skip" id="skipCount">0</div>
+            <div class="stat-label">Pulados</div>
+            <div class="stat-glyph skip">⊘ = Pulado</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num pending" id="pendingCount">40</div>
+            <div class="stat-label">Pendentes</div>
+            <div class="stat-glyph pending">— = Sem avaliação</div>
+          </div>
         </div>
-        <textarea placeholder="Anotações..." onchange="saveNotes(this)"></textarea>
+      </div>
+
+      <div class="export-bar">
+        <button class="btn-export primary" onclick="exportResults()">⬇ Exportar Resultados (.txt)</button>
+        <button class="btn-export" onclick="clearAll()">↺ Limpar tudo</button>
+      </div>
+
+      
+    <section class="module-section" id="auth">
+      <div class="module-header">
+        <div class="module-icon" style="background:#6ea8e822; color:#6ea8e8;">01</div>
+        <div class="module-info">
+          <div class="module-eyebrow">Módulo 01</div>
+          <div class="module-title">Autenticação &amp; Acesso</div>
+          <div class="module-desc">Login, segurança de sessão e controle de acesso</div>
+        </div>
+        <div class="module-count" style="color:#6ea8e8;">
+          <div class="count-num">5</div>
+          <div class="count-label">Casos</div>
+        </div>
+      </div>
+      
+    <div class="test-case" id="case-TC-001" data-testid="TC-001">
+      <div class="tc-head" onclick="toggleCase('TC-001')">
+        <span class="tc-id">TC-001</span>
+        <span class="tc-title">Login com credenciais válidas</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-001" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-001','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-001" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-001','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-001" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-001','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        <div class="fields-grid"><div class="field"><div class="field-label">Pré-condição</div><div class="field-value">URL juriscode.com.br</div></div><div class="field"><div class="field-label">Dados de teste</div><div class="field-value">Use o e-mail e a senha individuais que você recebeu no WhatsApp</div></div></div>
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Abra o navegador e acesse a URL juriscode.com.br</div><div class="step">Na tela de login, informe o e-mail e a senha individuais que você recebeu no WhatsApp</div><div class="step">Clique em &quot;Entrar&quot; e aguarde o redirecionamento</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Redirecionamento para o Dashboard em menos de 3 segundos</span></div><div class="crit"><span class="crit-check">✓</span><span>Nome do usuário aparece no cabeçalho ou sidebar</span></div><div class="crit"><span class="crit-check">✓</span><span>Nenhuma mensagem de erro na tela</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-001" placeholder="Anotações: o que aconteceu, prints se houver erro..." onchange="saveNotes('TC-001', this.value)"></textarea>
       </div>
     </div>
-    <div class="test-case" onclick="this.classList.toggle('open')">
-      <div><span class="test-id">TC-002</span> <span class="test-title">Login com senha incorreta <span class="toggle-icon">▼</span></span>
-        <span class="priority alta">Alta</span></div>
-      <div class="test-content">
-        <div class="section-label">Passos</div>
-        <ol class="steps">
-          <li>Tente fazer login com senha errada</li>
-          <li>Observe a resposta</li>
-        </ol>
-        <div class="section-label">Critérios</div>
-        <ul class="criteria">
-          <li>Mensagem de erro clara aparece</li>
-          <li>Não redireciona para área interna</li>
-          <li>Campo de senha é limpo</li>
-        </ul>
-        <div class="buttons">
-          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
-          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
-          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+    <div class="test-case" id="case-TC-002" data-testid="TC-002">
+      <div class="tc-head" onclick="toggleCase('TC-002')">
+        <span class="tc-id">TC-002</span>
+        <span class="tc-title">Login com senha incorreta</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-002" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-002','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-002" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-002','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-002" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-002','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
         </div>
-        <textarea placeholder="Anotações..." onchange="saveNotes(this)"></textarea>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Tente fazer login com a senha &quot;senhaerrada123&quot;</div><div class="step">Observe a resposta da plataforma</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Mensagem de erro clara aparece (ex: &quot;Credenciais inválidas&quot;)</span></div><div class="crit"><span class="crit-check">✓</span><span>Não redireciona para área interna</span></div><div class="crit"><span class="crit-check">✓</span><span>Campo de senha é limpo automaticamente</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-002" placeholder="Anotações..." onchange="saveNotes('TC-002', this.value)"></textarea>
       </div>
     </div>
-    <div class="test-case" onclick="this.classList.toggle('open')">
-      <div><span class="test-id">TC-003</span> <span class="test-title">Persistência de sessão (recarregar página) <span class="toggle-icon">▼</span></span>
-        <span class="priority media">Média</span></div>
-      <div class="test-content">
-        <div class="section-label">Passos</div>
-        <ol class="steps">
-          <li>Após login, pressione F5</li>
-          <li>Feche a aba e abra novamente</li>
-        </ol>
-        <div class="section-label">Critérios</div>
-        <ul class="criteria">
-          <li>Continua logado após F5</li>
-          <li>Mantém sessão ao reabrir</li>
-        </ul>
-        <div class="buttons">
-          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
-          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
-          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+    <div class="test-case" id="case-TC-003" data-testid="TC-003">
+      <div class="tc-head" onclick="toggleCase('TC-003')">
+        <span class="tc-id">TC-003</span>
+        <span class="tc-title">Persistência de sessão (recarregar página)</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-003" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-003','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-003" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-003','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-003" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-003','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
         </div>
-        <textarea placeholder="Anotações..." onchange="saveNotes(this)"></textarea>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Após fazer login, pressione F5 para recarregar a página</div><div class="step">Feche a aba e abra novamente o endereço da plataforma</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Após F5: continua logado, não pede senha novamente</span></div><div class="crit"><span class="crit-check">✓</span><span>Ao reabrir: mantém sessão ativa (ou solicita login de forma elegante)</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-003" placeholder="Anotações..." onchange="saveNotes('TC-003', this.value)"></textarea>
       </div>
     </div>
-    <div class="test-case" onclick="this.classList.toggle('open')">
-      <div><span class="test-id">TC-004</span> <span class="test-title">Logout e limpeza de sessão <span class="toggle-icon">▼</span></span>
-        <span class="priority media">Média</span></div>
-      <div class="test-content">
-        <div class="section-label">Passos</div>
-        <ol class="steps">
-          <li>Clique em "Sair"</li>
-          <li>Tente acessar uma página interna diretamente</li>
-        </ol>
-        <div class="section-label">Critérios</div>
-        <ul class="criteria">
-          <li>Redireciona para login após sair</li>
-          <li>Acesso direto também redireciona</li>
-        </ul>
-        <div class="buttons">
-          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
-          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
-          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+    <div class="test-case" id="case-TC-004" data-testid="TC-004">
+      <div class="tc-head" onclick="toggleCase('TC-004')">
+        <span class="tc-id">TC-004</span>
+        <span class="tc-title">Logout e limpeza de sessão</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-004" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-004','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-004" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-004','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-004" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-004','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
         </div>
-        <textarea placeholder="Anotações..." onchange="saveNotes(this)"></textarea>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Clique em &quot;Sair&quot; ou &quot;Logout&quot; (menu do usuário)</div><div class="step">Tente acessar uma página interna diretamente pela URL</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Redireciona para a tela de login após logout</span></div><div class="crit"><span class="crit-check">✓</span><span>Tentativa de acesso direto também redireciona para login</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-004" placeholder="Anotações..." onchange="saveNotes('TC-004', this.value)"></textarea>
       </div>
     </div>
-    <div class="test-case" onclick="this.classList.toggle('open')">
-      <div><span class="test-id">TC-005</span> <span class="test-title">Acesso em mobile / tela pequena <span class="toggle-icon">▼</span></span>
-        <span class="priority baixa">Baixa</span></div>
-      <div class="test-content">
-        <div class="section-label">Passos</div>
-        <ol class="steps">
-          <li>Abra DevTools (F12) e selecione "iPhone 12 Pro"</li>
-          <li>Tente fazer login e navegar</li>
-        </ol>
-        <div class="section-label">Critérios</div>
-        <ul class="criteria">
-          <li>Tela de login legível no mobile</li>
-          <li>Botões com tamanho adequado para toque</li>
-        </ul>
-        <div class="buttons">
-          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
-          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
-          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+    <div class="test-case" id="case-TC-005" data-testid="TC-005">
+      <div class="tc-head" onclick="toggleCase('TC-005')">
+        <span class="tc-id">TC-005</span>
+        <span class="tc-title">Acesso em mobile / tela pequena</span>
+        <span class="priority baixa">Baixa</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-005" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-005','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-005" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-005','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-005" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-005','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
         </div>
-        <textarea placeholder="Anotações..." onchange="saveNotes(this)"></textarea>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">No Chrome, pressione F12 → clique no ícone de dispositivo móvel</div><div class="step">Selecione &quot;iPhone 12 Pro&quot; e recarregue a página</div><div class="step">Tente fazer login e navegar pela plataforma</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Tela de login legível e utilizável no tamanho mobile</span></div><div class="crit"><span class="crit-check">✓</span><span>Botões e campos com tamanho adequado para toque</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-005" placeholder="Anotações..." onchange="saveNotes('TC-005', this.value)"></textarea>
       </div>
     </div>
-  </div>
-
-  <!-- MÓDULO 02 -->
-  <h2>Módulo 02 — Copiloto Jurídico IA (5 testes)</h2>
-  <div class="module">
-    <p style="color: #93a5bb; font-size: 13px; margin-bottom: 15px;">
-      Teste a qualidade das respostas da IA para diferentes perguntas jurídicas. Cada teste consome alguns pontos de sua cota de 150 consultas.
-    </p>
-    <div class="test-case" onclick="this.classList.toggle('open')">
-      <div><span class="test-id">TC-006</span> <span class="test-title">Pergunta jurídica básica (civil) <span class="toggle-icon">▼</span></span>
-        <span class="priority alta">Alta</span></div>
-      <div class="test-content">
+      <div class="module-footer-hint">Encontrou algo estranho? Anote o código do teste e reporte no grupo do WhatsApp.</div>
+    </section>
+    <section class="module-section" id="copiloto">
+      <div class="module-header">
+        <div class="module-icon" style="background:#45c0d422; color:#45c0d4;">02</div>
+        <div class="module-info">
+          <div class="module-eyebrow">Módulo 02</div>
+          <div class="module-title">Copiloto Jurídico IA</div>
+          <div class="module-desc">Chat com IA, qualidade das respostas, citação de fontes</div>
+        </div>
+        <div class="module-count" style="color:#45c0d4;">
+          <div class="count-num">7</div>
+          <div class="count-label">Casos</div>
+        </div>
+      </div>
+      
+    <div class="test-case" id="case-TC-006" data-testid="TC-006">
+      <div class="tc-head" onclick="toggleCase('TC-006')">
+        <span class="tc-id">TC-006</span>
+        <span class="tc-title">Pergunta jurídica básica (civil)</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-006" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-006','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-006" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-006','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-006" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-006','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
         <div class="section-label">Pergunta a digitar</div>
-        <p style="font-style: italic; color: #45c0d4; margin: 8px 0; padding-left: 15px;">
-          "Qual o prazo prescricional para ação de cobrança de honorários advocatícios?"
-        </p>
-        <div class="section-label">Critérios</div>
-        <ul class="criteria">
-          <li>Cita Art. 206, §5º, II do CC/2002 (5 anos)</li>
-          <li>Menciona fonte legal ou dispositivo</li>
-          <li>Resposta em menos de 30s</li>
-          <li>Linguagem técnica e precisa</li>
-        </ul>
-        <div class="buttons">
-          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
-          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
-          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        <div class="steps"><div class="step quote">&quot;Qual o prazo prescricional para ação de cobrança de honorários advocatícios?&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Resposta cita o Art. 206, §5º, II do CC/2002 (5 anos)</span></div><div class="crit"><span class="crit-check">✓</span><span>Menciona pelo menos uma fonte ou dispositivo legal</span></div><div class="crit"><span class="crit-check">✓</span><span>Resposta em menos de 30 segundos</span></div><div class="crit"><span class="crit-check">✓</span><span>Linguagem técnica e precisa</span></div>
         </div>
-        <textarea placeholder="Cole a resposta da IA ou descreva o resultado..." onchange="saveNotes(this)"></textarea>
+        <textarea class="notes" data-testid="TC-006" placeholder="Cole aqui a resposta da IA ou descreva o resultado..." onchange="saveNotes('TC-006', this.value)"></textarea>
       </div>
     </div>
-    <div class="test-case" onclick="this.classList.toggle('open')">
-      <div><span class="test-id">TC-007</span> <span class="test-title">Pergunta trabalhista com cálculo <span class="toggle-icon">▼</span></span>
-        <span class="priority alta">Alta</span></div>
-      <div class="test-content">
+    <div class="test-case" id="case-TC-007" data-testid="TC-007">
+      <div class="tc-head" onclick="toggleCase('TC-007')">
+        <span class="tc-id">TC-007</span>
+        <span class="tc-title">Pergunta trabalhista com cálculo implícito</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-007" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-007','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-007" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-007','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-007" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-007','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
         <div class="section-label">Pergunta a digitar</div>
-        <p style="font-style: italic; color: #45c0d4; margin: 8px 0; padding-left: 15px;">
-          "Meu cliente trabalhou 3 anos, salário de R$ 4.500, foi demitido sem justa causa. Calcule as verbas rescisórias."
-        </p>
-        <div class="section-label">Critérios</div>
-        <ul class="criteria">
-          <li>Ativa o agente Perito Calculista</li>
-          <li>Lista verbas separadamente</li>
-          <li>Valores calculados com base informada</li>
-          <li>Mostra raciocínio do cálculo</li>
-        </ul>
-        <div class="buttons">
-          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
-          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
-          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        <div class="steps"><div class="step quote">&quot;Meu cliente trabalhou 3 anos, salário de R$ 4.500, foi demitido sem justa causa. Calcule as verbas rescisórias devidas.&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Ativa o agente Perito Calculista automaticamente</span></div><div class="crit"><span class="crit-check">✓</span><span>Lista cada verba separadamente (saldo, aviso prévio, 13º, FGTS, férias)</span></div><div class="crit"><span class="crit-check">✓</span><span>Apresenta valores calculados com a base salarial informada</span></div><div class="crit"><span class="crit-check">✓</span><span>Mostra o raciocínio de cálculo</span></div>
         </div>
-        <textarea placeholder="Descreva o resultado..." onchange="saveNotes(this)"></textarea>
+        <textarea class="notes" data-testid="TC-007" placeholder="Descreva o resultado..." onchange="saveNotes('TC-007', this.value)"></textarea>
       </div>
     </div>
-    <div class="test-case" onclick="this.classList.toggle('open')">
-      <div><span class="test-id">TC-008</span> <span class="test-title">Continuidade de conversa (contexto) <span class="toggle-icon">▼</span></span>
-        <span class="priority alta">Alta</span></div>
-      <div class="test-content">
-        <div class="section-label">Sequência de perguntas</div>
-        <p style="font-style: italic; color: #45c0d4; margin: 8px 0; padding-left: 15px;">
-          1. "O que é rescisão indireta?"<br>
-          2. "Quais são os requisitos?"<br>
-          3. "E o que o TST entende sobre isso?"
-        </p>
-        <div class="section-label">Critérios</div>
-        <ul class="criteria">
-          <li>IA mantém tema "rescisão indireta"</li>
-          <li>Não perde contexto entre mensagens</li>
-          <li>Resposta 3 cita TST sobre rescisão</li>
-        </ul>
-        <div class="buttons">
-          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
-          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
-          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+    <div class="test-case" id="case-TC-008" data-testid="TC-008">
+      <div class="tc-head" onclick="toggleCase('TC-008')">
+        <span class="tc-id">TC-008</span>
+        <span class="tc-title">Pergunta vaga — tolerância da IA</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-008" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-008','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-008" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-008','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-008" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-008','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
         </div>
-        <textarea placeholder="Contexto foi mantido?" onchange="saveNotes(this)"></textarea>
+        <span class="toggle-icon">▾</span>
       </div>
-    </div>
-    <div class="test-case" onclick="this.classList.toggle('open')">
-      <div><span class="test-id">TC-009</span> <span class="test-title">Velocidade de resposta <span class="toggle-icon">▼</span></span>
-        <span class="priority media">Média</span></div>
-      <div class="test-content">
-        <div class="section-label">Procedimento</div>
-        <ol class="steps">
-          <li>Envie 5 perguntas diferentes</li>
-          <li>Cronometre cada resposta</li>
-        </ol>
-        <div class="section-label">Critérios</div>
-        <ul class="criteria">
-          <li>Média de resposta abaixo de 20s</li>
-          <li>Nenhuma resposta ultrapassa 60s</li>
-          <li>Sem timeout ou erro de conexão</li>
-        </ul>
-        <div class="buttons">
-          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
-          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
-          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
-        </div>
-        <textarea placeholder="Tempos: P1: __s | P2: __s | P3: __s | P4: __s | P5: __s" onchange="saveNotes(this)"></textarea>
-      </div>
-    </div>
-    <div class="test-case" onclick="this.classList.toggle('open')">
-      <div><span class="test-id">TC-010</span> <span class="test-title">Pergunta fora do escopo jurídico <span class="toggle-icon">▼</span></span>
-        <span class="priority baixa">Baixa</span></div>
-      <div class="test-content">
+      <div class="tc-body">
+        
         <div class="section-label">Pergunta a digitar</div>
-        <p style="font-style: italic; color: #45c0d4; margin: 8px 0; padding-left: 15px;">
-          "Qual a melhor receita de bolo de cenoura?"
-        </p>
-        <div class="section-label">Critérios</div>
-        <ul class="criteria">
-          <li>IA informa que atua apenas em direito</li>
-          <li>Sugere pergunta jurídica alternativa</li>
-          <li>Não inventa resposta culinária</li>
-        </ul>
-        <div class="buttons">
-          <button class="pass" onclick="setStatus(this, 'pass')">✓</button>
-          <button class="fail" onclick="setStatus(this, 'fail')">✗</button>
-          <button class="skip" onclick="setStatus(this, 'skip')">⊘</button>
+        <div class="steps"><div class="step quote">&quot;Me fala sobre direito&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>IA responde de forma coerente mesmo com pergunta genérica</span></div><div class="crit"><span class="crit-check">✓</span><span>Sugere especificar a área ou o tema de interesse</span></div><div class="crit"><span class="crit-check">✓</span><span>Não trava, não gera erro, não responde nonsense</span></div>
         </div>
-        <textarea placeholder="Descreva a resposta..." onchange="saveNotes(this)"></textarea>
+        <textarea class="notes" data-testid="TC-008" placeholder="Descreva o resultado..." onchange="saveNotes('TC-008', this.value)"></textarea>
       </div>
     </div>
-  </div>
+    <div class="test-case" id="case-TC-009" data-testid="TC-009">
+      <div class="tc-head" onclick="toggleCase('TC-009')">
+        <span class="tc-id">TC-009</span>
+        <span class="tc-title">Continuidade da conversa (contexto)</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-009" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-009','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-009" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-009','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-009" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-009','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Sequência de mensagens</div>
+        <div class="steps"><div class="step quote">&quot;O que é rescisão indireta?&quot;</div><div class="step quote">&quot;Quais são os requisitos para configurá-la?&quot;</div><div class="step quote">&quot;E o que o TST entende sobre isso?&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>IA mantém o tema &quot;rescisão indireta&quot; ao longo das 3 mensagens</span></div><div class="crit"><span class="crit-check">✓</span><span>Não &quot;esquece&quot; o contexto e pede para repetir</span></div><div class="crit"><span class="crit-check">✓</span><span>Resposta 3 cita posição do TST sobre rescisão indireta</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-009" placeholder="Descreva se o contexto foi mantido..." onchange="saveNotes('TC-009', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-010" data-testid="TC-010">
+      <div class="tc-head" onclick="toggleCase('TC-010')">
+        <span class="tc-id">TC-010</span>
+        <span class="tc-title">Citação de fontes na resposta</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-010" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-010','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-010" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-010','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-010" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-010','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Pergunta a digitar</div>
+        <div class="steps"><div class="step quote">&quot;Com base na jurisprudência do STJ, como se aplica a teoria do risco na responsabilidade civil?&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Resposta cita artigos específicos (CC/2002, Art. 927)</span></div><div class="crit"><span class="crit-check">✓</span><span>Menciona precedente do STJ ou STF se disponível</span></div><div class="crit"><span class="crit-check">✓</span><span>Indica a base documental usada (seção &quot;Fontes&quot; ou similar)</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-010" placeholder="Quais fontes foram citadas?" onchange="saveNotes('TC-010', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-011" data-testid="TC-011">
+      <div class="tc-head" onclick="toggleCase('TC-011')">
+        <span class="tc-id">TC-011</span>
+        <span class="tc-title">Velocidade de resposta</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-011" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-011','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-011" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-011','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-011" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-011','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Envie 5 perguntas distintas e cronometre o tempo de resposta de cada uma</div><div class="step">Registre os tempos abaixo nas anotações</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Média de resposta abaixo de 20 segundos</span></div><div class="crit"><span class="crit-check">✓</span><span>Nenhuma resposta ultrapassa 60 segundos</span></div><div class="crit"><span class="crit-check">✓</span><span>Não apresenta timeout ou erro de conexão</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-011" placeholder="Registre os tempos: P1: __s | P2: __s | P3: __s | P4: __s | P5: __s" onchange="saveNotes('TC-011', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-012" data-testid="TC-012">
+      <div class="tc-head" onclick="toggleCase('TC-012')">
+        <span class="tc-id">TC-012</span>
+        <span class="tc-title">Pergunta fora do escopo jurídico</span>
+        <span class="priority baixa">Baixa</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-012" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-012','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-012" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-012','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-012" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-012','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Pergunta a digitar</div>
+        <div class="steps"><div class="step quote">&quot;Qual a melhor receita de bolo de cenoura?&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>IA gentilmente informa que atua apenas no âmbito jurídico</span></div><div class="crit"><span class="crit-check">✓</span><span>Sugere uma pergunta jurídica em substituição</span></div><div class="crit"><span class="crit-check">✓</span><span>Não &quot;inventa&quot; uma resposta culinária</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-012" placeholder="Descreva a resposta da IA..." onchange="saveNotes('TC-012', this.value)"></textarea>
+      </div>
+    </div>
+      <div class="module-footer-hint">Encontrou algo estranho? Anote o código do teste e reporte no grupo do WhatsApp.</div>
+    </section>
+    <section class="module-section" id="agentes">
+      <div class="module-header">
+        <div class="module-icon" style="background:#e6b95c22; color:#e6b95c;">03</div>
+        <div class="module-info">
+          <div class="module-eyebrow">Módulo 03</div>
+          <div class="module-title">Agentes de IA Especializados</div>
+          <div class="module-desc">Roteamento automático por palavras-chave — 5 dos 7 agentes cobertos neste roteiro</div>
+        </div>
+        <div class="module-count" style="color:#e6b95c;">
+          <div class="count-num">5</div>
+          <div class="count-label">Casos</div>
+        </div>
+      </div>
+      
+    <div class="test-case" id="case-TC-013" data-testid="TC-013">
+      <div class="tc-head" onclick="toggleCase('TC-013')">
+        <span class="tc-id">TC-013</span>
+        <span class="tc-title">Agente Julgador — análise imparcial de caso</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-013" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-013','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-013" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-013','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-013" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-013','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Pergunta a digitar</div>
+        <div class="steps"><div class="step quote">&quot;Como juiz, analise: meu cliente foi demitido por justa causa após 8 anos de empresa, mas a alegação é abandono de emprego sem as 3 advertências necessárias. Quais são os pontos fortes e fracos desta demissão?&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Identifica automaticamente o contexto (demissão por justa causa)</span></div><div class="crit"><span class="crit-check">✓</span><span>Aponta pontos favoráveis E desfavoráveis ao empregado</span></div><div class="crit"><span class="crit-check">✓</span><span>Cita CLT Art. 482 ou correlato</span></div><div class="crit"><span class="crit-check">✓</span><span>Tom imparcial, sem tomar partido</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-013" placeholder="Descreva o resultado..." onchange="saveNotes('TC-013', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-014" data-testid="TC-014">
+      <div class="tc-head" onclick="toggleCase('TC-014')">
+        <span class="tc-id">TC-014</span>
+        <span class="tc-title">Agente Doutrinador — pesquisa acadêmica</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-014" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-014','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-014" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-014','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-014" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-014','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Pergunta a digitar</div>
+        <div class="steps"><div class="step quote">&quot;Explique os fundamentos doutrinários da responsabilidade civil objetiva no Direito do Consumidor, com referência à jurisprudência do STJ&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Cita CDC Art. 12 e/ou Art. 14</span></div><div class="crit"><span class="crit-check">✓</span><span>Apresenta conceito de &quot;fortuito interno&quot; vs &quot;fortuito externo&quot;</span></div><div class="crit"><span class="crit-check">✓</span><span>Menciona posição doutrinária (mesmo que sem autor específico)</span></div><div class="crit"><span class="crit-check">✓</span><span>Nível técnico acadêmico na linguagem</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-014" placeholder="Descreva o resultado..." onchange="saveNotes('TC-014', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-015" data-testid="TC-015">
+      <div class="tc-head" onclick="toggleCase('TC-015')">
+        <span class="tc-id">TC-015</span>
+        <span class="tc-title">Agente Estrategista — plano processual</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-015" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-015','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-015" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-015','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-015" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-015','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Pergunta a digitar</div>
+        <div class="steps"><div class="step quote">&quot;Qual a melhor estratégia processual para um caso de acidente de trabalho com perda de 3 dedos, onde a empresa nega responsabilidade alegando culpa exclusiva do empregado?&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Propõe inversão do ônus da prova (CDC ou CLT)</span></div><div class="crit"><span class="crit-check">✓</span><span>Sugere laudo pericial como prova central</span></div><div class="crit"><span class="crit-check">✓</span><span>Aponta argumentos para afastar culpa exclusiva</span></div><div class="crit"><span class="crit-check">✓</span><span>Tom estratégico e orientado ao &quot;como vencer&quot;</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-015" placeholder="Descreva o resultado..." onchange="saveNotes('TC-015', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-016" data-testid="TC-016">
+      <div class="tc-head" onclick="toggleCase('TC-016')">
+        <span class="tc-id">TC-016</span>
+        <span class="tc-title">Agente Redator — elaboração de peça</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-016" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-016','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-016" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-016','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-016" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-016','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Pergunta a digitar</div>
+        <div class="steps"><div class="step quote">&quot;Redija um parágrafo de argumentação jurídica para uma peça de rescisão indireta, com fundamento no Art. 483 da CLT, caso de atraso salarial reiterado por 4 meses.&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Texto em linguagem forense adequada (não coloquial)</span></div><div class="crit"><span class="crit-check">✓</span><span>Cita expressamente o Art. 483, &quot;d&quot; da CLT</span></div><div class="crit"><span class="crit-check">✓</span><span>Redação coesa e pronta para inserção em peça real</span></div><div class="crit"><span class="crit-check">✓</span><span>Estrutura: fato → norma → conclusão</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-016" placeholder="Cole ou descreva o texto gerado..." onchange="saveNotes('TC-016', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-017" data-testid="TC-017">
+      <div class="tc-head" onclick="toggleCase('TC-017')">
+        <span class="tc-id">TC-017</span>
+        <span class="tc-title">Perito Calculista — cálculo previdenciário</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-017" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-017','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-017" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-017','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-017" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-017','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Pergunta a digitar</div>
+        <div class="steps"><div class="step quote">&quot;Calcule quanto meu cliente recebe de benefício B31 do INSS, considerando salário médio de R$ 3.200 nos últimos 12 meses&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Apresenta o cálculo com salário de benefício</span></div><div class="crit"><span class="crit-check">✓</span><span>Aplica a alíquota correta (91% para B31 padrão)</span></div><div class="crit"><span class="crit-check">✓</span><span>Menciona teto do INSS se relevante</span></div><div class="crit"><span class="crit-check">✓</span><span>Explica cada etapa do cálculo</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-017" placeholder="O cálculo estava correto? Descreva..." onchange="saveNotes('TC-017', this.value)"></textarea>
+      </div>
+    </div>
+      <div class="module-footer-hint">Encontrou algo estranho? Anote o código do teste e reporte no grupo do WhatsApp.</div>
+    </section>
+    <section class="module-section" id="demandas">
+      <div class="module-header">
+        <div class="module-icon" style="background:#9db8d822; color:#9db8d8;">04</div>
+        <div class="module-info">
+          <div class="module-eyebrow">Módulo 04</div>
+          <div class="module-title">Gestão de Demandas</div>
+          <div class="module-desc">Criação, edição, filtros e validações do formulário</div>
+        </div>
+        <div class="module-count" style="color:#9db8d8;">
+          <div class="count-num">6</div>
+          <div class="count-label">Casos</div>
+        </div>
+      </div>
+      
+    <div class="test-case" id="case-TC-018" data-testid="TC-018">
+      <div class="tc-head" onclick="toggleCase('TC-018')">
+        <span class="tc-id">TC-018</span>
+        <span class="tc-title">Criar nova demanda (formulário completo)</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-018" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-018','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-018" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-018','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-018" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-018','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Dados a preencher</div>
+        <div class="steps"><div class="step">Campo do Direito: Trabalho | Área: Rescisório | Nº processo: 0001234-01.2026.5.04.0001 | Tribunal: TRT 4ª | Status: Ativo</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Formulário salva sem erros</span></div><div class="crit"><span class="crit-check">✓</span><span>Demanda aparece na lista de processos</span></div><div class="crit"><span class="crit-check">✓</span><span>Número do processo é exibido formatado corretamente</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-018" placeholder="O formulário salvou? Algum campo com problema?" onchange="saveNotes('TC-018', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-019" data-testid="TC-019">
+      <div class="tc-head" onclick="toggleCase('TC-019')">
+        <span class="tc-id">TC-019</span>
+        <span class="tc-title">Filtros por Campo do Direito e Tribunal</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-019" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-019','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-019" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-019','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-019" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-019','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Cadastre 3 demandas em áreas diferentes (Civil, Trabalho, Previdenciário)</div><div class="step">Use o filtro para exibir apenas &quot;Trabalho&quot;</div><div class="step">Verifique se apenas a demanda trabalhista aparece</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Filtro funciona corretamente, exibindo apenas o campo selecionado</span></div><div class="crit"><span class="crit-check">✓</span><span>Limpar filtro mostra todas as demandas novamente</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-019" placeholder="Os filtros funcionaram?" onchange="saveNotes('TC-019', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-020" data-testid="TC-020">
+      <div class="tc-head" onclick="toggleCase('TC-020')">
+        <span class="tc-id">TC-020</span>
+        <span class="tc-title">Editar e excluir demanda</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-020" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-020','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-020" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-020','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-020" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-020','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Abra uma demanda existente e altere o status para &quot;Encerrado&quot;</div><div class="step">Salve e confirme se a alteração foi persistida</div><div class="step">Tente excluir uma demanda de teste</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Edição salva corretamente e reflete na lista</span></div><div class="crit"><span class="crit-check">✓</span><span>Exclusão pede confirmação antes de deletar</span></div><div class="crit"><span class="crit-check">✓</span><span>Após exclusão, item desaparece da lista</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-020" placeholder="Algum problema ao editar ou excluir?" onchange="saveNotes('TC-020', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-021" data-testid="TC-021">
+      <div class="tc-head" onclick="toggleCase('TC-021')">
+        <span class="tc-id">TC-021</span>
+        <span class="tc-title">Validação de campos obrigatórios</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-021" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-021','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-021" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-021','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-021" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-021','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Acesse o formulário de nova demanda</div><div class="step">Clique em &quot;Salvar&quot; sem preencher nenhum campo</div><div class="step">Observe quais campos ficam marcados como obrigatórios</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Sistema não salva sem os campos obrigatórios</span></div><div class="crit"><span class="crit-check">✓</span><span>Mensagem de erro clara indica quais campos faltam</span></div><div class="crit"><span class="crit-check">✓</span><span>Campos obrigatórios ficam visualmente destacados</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-021" placeholder="Quais campos são obrigatórios? A validação funcionou?" onchange="saveNotes('TC-021', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-022" data-testid="TC-022">
+      <div class="tc-head" onclick="toggleCase('TC-022')">
+        <span class="tc-id">TC-022</span>
+        <span class="tc-title">Demanda com JEC — verificar bloqueio nas áreas sem JEC</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-022" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-022','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-022" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-022','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-022" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-022','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">No formulário de nova demanda, selecione Campo do Direito: &quot;Trabalho&quot;</div><div class="step">Observe se a opção &quot;JEC&quot; aparece ou não como tipo de juízo</div><div class="step">Repita com &quot;Civil&quot; → JEC deve estar disponível</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Trabalhista: JEC não aparece como opção (legalmente proibido)</span></div><div class="crit"><span class="crit-check">✓</span><span>Civil: JEC aparece normalmente como opção</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-022" placeholder="O bloqueio de JEC funcionou corretamente?" onchange="saveNotes('TC-022', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-023" data-testid="TC-023">
+      <div class="tc-head" onclick="toggleCase('TC-023')">
+        <span class="tc-id">TC-023</span>
+        <span class="tc-title">Busca e paginação na lista de demandas</span>
+        <span class="priority baixa">Baixa</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-023" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-023','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-023" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-023','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-023" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-023','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Use o campo de busca para procurar uma demanda pelo número do processo</div><div class="step">Verifique se a paginação funciona com muitas demandas</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Busca retorna resultado correto</span></div><div class="crit"><span class="crit-check">✓</span><span>Paginação funciona sem recarregar a página inteira</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-023" placeholder="Observações..." onchange="saveNotes('TC-023', this.value)"></textarea>
+      </div>
+    </div>
+      <div class="module-footer-hint">Encontrou algo estranho? Anote o código do teste e reporte no grupo do WhatsApp.</div>
+    </section>
+    <section class="module-section" id="clientes">
+      <div class="module-header">
+        <div class="module-icon" style="background:#6ea8e822; color:#6ea8e8;">05</div>
+        <div class="module-info">
+          <div class="module-eyebrow">Módulo 05</div>
+          <div class="module-title">Gestão de Clientes</div>
+          <div class="module-desc">Cadastro PF e PJ, edição, listagem</div>
+        </div>
+        <div class="module-count" style="color:#6ea8e8;">
+          <div class="count-num">4</div>
+          <div class="count-label">Casos</div>
+        </div>
+      </div>
+      
+    <div class="test-case" id="case-TC-024" data-testid="TC-024">
+      <div class="tc-head" onclick="toggleCase('TC-024')">
+        <span class="tc-id">TC-024</span>
+        <span class="tc-title">Cadastrar cliente Pessoa Física com CPF válido</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-024" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-024','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-024" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-024','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-024" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-024','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Dados</div>
+        <div class="steps"><div class="step">Nome: João Silva · CPF: 123.456.789-09 · Telefone: (51) 99999-0000 · E-mail: joao@teste.com</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Salva sem erros, aparece na lista de PF</span></div><div class="crit"><span class="crit-check">✓</span><span>CPF é validado ou formatado</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-024" placeholder="Observações..." onchange="saveNotes('TC-024', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-025" data-testid="TC-025">
+      <div class="tc-head" onclick="toggleCase('TC-025')">
+        <span class="tc-id">TC-025</span>
+        <span class="tc-title">Cadastrar cliente Pessoa Jurídica com CNPJ</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-025" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-025','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-025" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-025','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-025" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-025','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Dados</div>
+        <div class="steps"><div class="step">Razão Social: Empresa Teste Ltda · CNPJ: 11.222.333/0001-81 · Ramo: Comércio</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Card do cliente identifica claramente que é PJ</span></div><div class="crit"><span class="crit-check">✓</span><span>CNPJ formatado corretamente</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-025" placeholder="Observações..." onchange="saveNotes('TC-025', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-026" data-testid="TC-026">
+      <div class="tc-head" onclick="toggleCase('TC-026')">
+        <span class="tc-id">TC-026</span>
+        <span class="tc-title">Buscar cliente por nome/CPF/CNPJ</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-026" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-026','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-026" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-026','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-026" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-026','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Cadastre 3 clientes com nomes distintos</div><div class="step">Use a busca para encontrar pelo primeiro nome de cada um</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Busca funciona com nome parcial</span></div><div class="crit"><span class="crit-check">✓</span><span>Resultado correto em menos de 2 segundos</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-026" placeholder="Observações..." onchange="saveNotes('TC-026', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-027" data-testid="TC-027">
+      <div class="tc-head" onclick="toggleCase('TC-027')">
+        <span class="tc-id">TC-027</span>
+        <span class="tc-title">Vincular cliente a uma demanda</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-027" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-027','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-027" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-027','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-027" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-027','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Ao criar uma nova demanda, selecione um cliente cadastrado no campo &quot;Cliente&quot;</div><div class="step">Salve e abra o perfil do cliente → verifique se a demanda aparece vinculada</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Cliente e demanda ficam vinculados</span></div><div class="crit"><span class="crit-check">✓</span><span>No perfil do cliente, a demanda é listada</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-027" placeholder="A vinculação funcionou?" onchange="saveNotes('TC-027', this.value)"></textarea>
+      </div>
+    </div>
+      <div class="module-footer-hint">Encontrou algo estranho? Anote o código do teste e reporte no grupo do WhatsApp.</div>
+    </section>
+    <section class="module-section" id="honorarios">
+      <div class="module-header">
+        <div class="module-icon" style="background:#e6b95c22; color:#e6b95c;">06</div>
+        <div class="module-info">
+          <div class="module-eyebrow">Módulo 06</div>
+          <div class="module-title">Honorários OAB — 27 Estados</div>
+          <div class="module-desc">Consulta por UF, serviço e retorno de valores</div>
+        </div>
+        <div class="module-count" style="color:#e6b95c;">
+          <div class="count-num">5</div>
+          <div class="count-label">Casos</div>
+        </div>
+      </div>
+      
+    <div class="test-case" id="case-TC-028" data-testid="TC-028">
+      <div class="tc-head" onclick="toggleCase('TC-028')">
+        <span class="tc-id">TC-028</span>
+        <span class="tc-title">Consulta honorários trabalhistas — RS</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-028" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-028','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-028" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-028','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-028" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-028','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Acesse Honorários OAB, selecione UF: RS</div><div class="step">Selecione área: Trabalho → Serviço: &quot;Reclamação trabalhista&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Retorna valor em reais (não vazio)</span></div><div class="crit"><span class="crit-check">✓</span><span>Exibe o percentual quando disponível</span></div><div class="crit"><span class="crit-check">✓</span><span>Resposta em menos de 5 segundos</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-028" placeholder="Qual valor retornou? Parece correto?" onchange="saveNotes('TC-028', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-029" data-testid="TC-029">
+      <div class="tc-head" onclick="toggleCase('TC-029')">
+        <span class="tc-id">TC-029</span>
+        <span class="tc-title">Consulta honorários SP — maior tabela</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-029" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-029','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-029" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-029','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-029" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-029','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Selecione UF: SP → área: Civil → 3 serviços distintos</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Todos os 3 serviços retornam dados</span></div><div class="crit"><span class="crit-check">✓</span><span>Valores diferentes para serviços distintos (não retorna sempre o mesmo)</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-029" placeholder="Os valores de SP parecem razoáveis?" onchange="saveNotes('TC-029', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-030" data-testid="TC-030">
+      <div class="tc-head" onclick="toggleCase('TC-030')">
+        <span class="tc-id">TC-030</span>
+        <span class="tc-title">Estados com apenas percentual (CE, SC, PR)</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-030" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-030','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-030" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-030','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-030" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-030','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Consulte honorários para CE ou SC ou PR em qualquer área</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Retorna percentual (ex: 20%) ao invés de valor em reais</span></div><div class="crit"><span class="crit-check">✓</span><span>Exibe aviso explicando que esta UF usa percentual na tabela oficial</span></div><div class="crit"><span class="crit-check">✓</span><span>Não retorna erro — retorna percentual de forma clara</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-030" placeholder="O aviso sobre percentual apareceu?" onchange="saveNotes('TC-030', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-031" data-testid="TC-031">
+      <div class="tc-head" onclick="toggleCase('TC-031')">
+        <span class="tc-id">TC-031</span>
+        <span class="tc-title">Cobertura de todas as UFs (spot check)</span>
+        <span class="priority baixa">Baixa</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-031" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-031','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-031" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-031','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-031" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-031','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Selecione 5 UFs aleatórias (ex: AM, BA, GO, PA, TO) e consulte &quot;honorários cíveis&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Todas as 5 UFs retornam algum resultado (valor ou percentual)</span></div><div class="crit"><span class="crit-check">✓</span><span>Nenhuma retorna erro 500 ou &quot;sem dados&quot;</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-031" placeholder="Quais UFs testou? Todas retornaram dados?" onchange="saveNotes('TC-031', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-032" data-testid="TC-032">
+      <div class="tc-head" onclick="toggleCase('TC-032')">
+        <span class="tc-id">TC-032</span>
+        <span class="tc-title">Tabela NACIONAL — honorários federais</span>
+        <span class="priority baixa">Baixa</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-032" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-032','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-032" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-032','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-032" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-032','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Se disponível, selecione a opção &quot;NACIONAL&quot; na lista de UFs</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Tabela nacional retorna dados para processos federais</span></div><div class="crit"><span class="crit-check">✓</span><span>Indicado claramente que é a tabela federal/nacional</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-032" placeholder="Observações..." onchange="saveNotes('TC-032', this.value)"></textarea>
+      </div>
+    </div>
+      <div class="module-footer-hint">Encontrou algo estranho? Anote o código do teste e reporte no grupo do WhatsApp.</div>
+    </section>
+    <section class="module-section" id="documentos">
+      <div class="module-header">
+        <div class="module-icon" style="background:#45c0d422; color:#45c0d4;">07</div>
+        <div class="module-info">
+          <div class="module-eyebrow">Módulo 07</div>
+          <div class="module-title">Documentos &amp; Ingestão de IA</div>
+          <div class="module-desc">Upload de peças, indexação e consulta posterior</div>
+        </div>
+        <div class="module-count" style="color:#45c0d4;">
+          <div class="count-num">4</div>
+          <div class="count-label">Casos</div>
+        </div>
+      </div>
+      
+    <div class="test-case" id="case-TC-033" data-testid="TC-033">
+      <div class="tc-head" onclick="toggleCase('TC-033')">
+        <span class="tc-id">TC-033</span>
+        <span class="tc-title">Upload de PDF jurídico</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-033" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-033','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-033" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-033','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-033" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-033','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Faça upload de um PDF com uma petição inicial ou contrato (use um documento de teste)</div><div class="step">Aguarde a mensagem de confirmação de processamento</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Upload concluído sem erro</span></div><div class="crit"><span class="crit-check">✓</span><span>Confirmação de que o documento foi processado pela IA</span></div><div class="crit"><span class="crit-check">✓</span><span>Documento aparece na lista de arquivos</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-033" placeholder="Upload funcionou? Quantos segundos demorou?" onchange="saveNotes('TC-033', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-034" data-testid="TC-034">
+      <div class="tc-head" onclick="toggleCase('TC-034')">
+        <span class="tc-id">TC-034</span>
+        <span class="tc-title">Consultar IA com base no documento enviado</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-034" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-034','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-034" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-034','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-034" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-034','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos (após TC-033)</div>
+        <div class="steps"><div class="step">No Copiloto, pergunte algo específico do documento enviado</div><div class="step">Ex: &quot;Quais são os pedidos da petição inicial que enviei?&quot;</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>IA responde com base no conteúdo do documento específico</span></div><div class="crit"><span class="crit-check">✓</span><span>Cita o documento como fonte</span></div><div class="crit"><span class="crit-check">✓</span><span>Não inventa informações ausentes no documento</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-034" placeholder="A IA usou o documento corretamente?" onchange="saveNotes('TC-034', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-035" data-testid="TC-035">
+      <div class="tc-head" onclick="toggleCase('TC-035')">
+        <span class="tc-id">TC-035</span>
+        <span class="tc-title">Tentativa de upload de arquivo inválido</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-035" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-035','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-035" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-035','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-035" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-035','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Tente fazer upload de um arquivo .exe ou .zip</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Sistema rejeita o arquivo com mensagem explicativa</span></div><div class="crit"><span class="crit-check">✓</span><span>Indica quais formatos são suportados</span></div><div class="crit"><span class="crit-check">✓</span><span>Não gera erro 500 — apenas rejeita graciosamente</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-035" placeholder="O sistema rejeitou corretamente?" onchange="saveNotes('TC-035', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-036" data-testid="TC-036">
+      <div class="tc-head" onclick="toggleCase('TC-036')">
+        <span class="tc-id">TC-036</span>
+        <span class="tc-title">PDF escaneado (imagem) — OCR</span>
+        <span class="priority baixa">Baixa</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-036" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-036','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-036" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-036','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-036" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-036','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Se tiver um PDF escaneado (imagem), faça o upload</div><div class="step">Verifique se o sistema consegue extrair o texto</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Sistema processa e extrai texto do PDF escaneado</span></div><div class="crit"><span class="crit-check">✓</span><span>Ou informa claramente que PDF escaneado não é suportado ainda</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-036" placeholder="Resultado com PDF escaneado?" onchange="saveNotes('TC-036', this.value)"></textarea>
+      </div>
+    </div>
+      <div class="module-footer-hint">Encontrou algo estranho? Anote o código do teste e reporte no grupo do WhatsApp.</div>
+    </section>
+    <section class="module-section" id="dashboard">
+      <div class="module-header">
+        <div class="module-icon" style="background:#4ade8022; color:#4ade80;">08</div>
+        <div class="module-info">
+          <div class="module-eyebrow">Módulo 08</div>
+          <div class="module-title">Dashboard &amp; Kanban</div>
+          <div class="module-desc">Visão geral, métricas e organização de tarefas</div>
+        </div>
+        <div class="module-count" style="color:#4ade80;">
+          <div class="count-num">4</div>
+          <div class="count-label">Casos</div>
+        </div>
+      </div>
+      
+    <div class="test-case" id="case-TC-037" data-testid="TC-037">
+      <div class="tc-head" onclick="toggleCase('TC-037')">
+        <span class="tc-id">TC-037</span>
+        <span class="tc-title">Carregamento do Dashboard principal</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-037" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-037','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-037" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-037','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-037" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-037','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Após login, acesse o Dashboard principal</div><div class="step">Observe os cards e métricas exibidas</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Dashboard carrega em menos de 5 segundos</span></div><div class="crit"><span class="crit-check">✓</span><span>Cards de métricas são exibidos (total demandas, clientes, etc.)</span></div><div class="crit"><span class="crit-check">✓</span><span>Nenhum erro visível ou dado faltante</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-037" placeholder="O dashboard carregou corretamente?" onchange="saveNotes('TC-037', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-038" data-testid="TC-038">
+      <div class="tc-head" onclick="toggleCase('TC-038')">
+        <span class="tc-id">TC-038</span>
+        <span class="tc-title">Kanban — mover card entre colunas</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-038" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-038','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-038" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-038','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-038" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-038','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Acesse o Kanban e localize um card de tarefa</div><div class="step">Arraste o card para a coluna &quot;Em Andamento&quot; (drag-and-drop)</div><div class="step">No celular/tablet: toque no menu ⋮ do card e use &quot;Mover para&quot; — o arrastar-e-soltar é recurso de desktop</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Card pode ser arrastado e solto na nova coluna</span></div><div class="crit"><span class="crit-check">✓</span><span>Mudança persiste após recarregar a página</span></div><div class="crit"><span class="crit-check">✓</span><span>No mobile, o card muda de coluna via menu &quot;Mover para&quot;</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-038" placeholder="Drag-and-drop funcionou? Persistiu?" onchange="saveNotes('TC-038', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-039" data-testid="TC-039">
+      <div class="tc-head" onclick="toggleCase('TC-039')">
+        <span class="tc-id">TC-039</span>
+        <span class="tc-title">Métricas refletem dados reais do escritório</span>
+        <span class="priority media">Média</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-039" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-039','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-039" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-039','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-039" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-039','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Passos</div>
+        <div class="steps"><div class="step">Cadastre 3 demandas e 2 clientes</div><div class="step">Volte ao Dashboard e verifique se os números foram atualizados</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Contador de demandas reflete o número correto</span></div><div class="crit"><span class="crit-check">✓</span><span>Contador de clientes reflete o número correto</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-039" placeholder="Os números batem?" onchange="saveNotes('TC-039', this.value)"></textarea>
+      </div>
+    </div>
+    <div class="test-case" id="case-TC-040" data-testid="TC-040">
+      <div class="tc-head" onclick="toggleCase('TC-040')">
+        <span class="tc-id">TC-040</span>
+        <span class="tc-title">Experiência geral de navegação — fluidez e usabilidade</span>
+        <span class="priority alta">Alta</span>
+        <div class="tc-buttons">
+          <div class="btn-wrap">
+            <button class="btn-eval btn-pass" data-testid="TC-040" data-action="pass" onclick="event.stopPropagation(); setStatus('TC-040','pass',this)" title="Aprovado">✓</button>
+            <span class="btn-label">Aprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-fail" data-testid="TC-040" data-action="fail" onclick="event.stopPropagation(); setStatus('TC-040','fail',this)" title="Reprovado">✗</button>
+            <span class="btn-label">Reprovado</span>
+          </div>
+          <div class="btn-wrap">
+            <button class="btn-eval btn-skip" data-testid="TC-040" data-action="skip" onclick="event.stopPropagation(); setStatus('TC-040','skip',this)" title="Pulado">⊘</button>
+            <span class="btn-label">Pulado</span>
+          </div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="tc-body">
+        
+        <div class="section-label">Avaliação subjetiva</div>
+        <div class="steps"><div class="step">Use a plataforma por 30 minutos e responda às perguntas ao lado</div></div>
+        <div class="criteria-box">
+          <div class="section-label crit-label">Critérios de Aprovação</div>
+          <div class="crit"><span class="crit-check">✓</span><span>Navegação entre módulos é intuitiva sem manual</span></div><div class="crit"><span class="crit-check">✓</span><span>Sidebar e menus estão claramente organizados</span></div><div class="crit"><span class="crit-check">✓</span><span>Nenhuma tela causa confusão sobre o que fazer a seguir</span></div><div class="crit"><span class="crit-check">✓</span><span>Plataforma se comporta como uma aplicação profissional</span></div>
+        </div>
+        <textarea class="notes" data-testid="TC-040" placeholder="Avaliação livre: o que você acha da usabilidade geral? O que é confuso? O que é excelente?" onchange="saveNotes('TC-040', this.value)"></textarea>
+      </div>
+    </div>
+      <div class="module-footer-hint">Encontrou algo estranho? Anote o código do teste e reporte no grupo do WhatsApp.</div>
+    </section>
 
-  <!-- MÓDULOS RESTANTES — RESUMIDOS -->
-  <h2>Módulo 03 — Agentes Especializados (5 testes)</h2>
-  <div class="module" style="color: #93a5bb; font-size: 13px;">
-    <p>TC-011 até TC-015: Teste os 5 agentes (Julgador, Doutrinador, Estrategista, Redator, Perito) com perguntas específicas que ativem cada um.</p>
-    <p style="margin-top: 12px;">
-      <strong>Exemplo TC-011 (Julgador):</strong> "Como juiz, analise: meu cliente foi demitido sem as 3 advertências necessárias. Quais são os pontos fortes e fracos?" — Deve usar tom imparcial, citar CLT Art. 482.
-    </p>
-  </div>
+    </div>
+  </main>
+</div>
 
-  <h2>Módulo 04 — Gestão de Demandas (6 testes)</h2>
-  <div class="module" style="color: #93a5bb; font-size: 13px;">
-    <p>TC-016 até TC-021: Teste criar, editar, filtrar e validar demandas. Checklist: formulário salva, filtros funcionam, exclusão pede confirmação, campos obrigatórios são validados.</p>
-  </div>
-
-  <h2>Módulo 05 — Gestão de Clientes (4 testes)</h2>
-  <div class="module" style="color: #93a5bb; font-size: 13px;">
-    <p>TC-022 até TC-025: Cadastre clientes PF e PJ, busque por nome/CPF/CNPJ, vincule a demanda. Validar se dados persistem.</p>
-  </div>
-
-  <h2>Módulo 06 — Honorários OAB (5 testes)</h2>
-  <div class="module" style="color: #93a5bb; font-size: 13px;">
-    <p>TC-026 até TC-030: Consulte honorários de 5 UFs diferentes (RS, SP, CE, SC, NACIONAL). Verifique se retorna valor ou percentual conforme estado. Teste cobertura de todas as 27 UFs.</p>
-  </div>
-
-  <h2>Módulo 07 — Documentos & Ingestão IA (4 testes)</h2>
-  <div class="module" style="color: #93a5bb; font-size: 13px;">
-    <p>TC-031 até TC-034: Faça upload de PDF, verifique processamento, consulte IA com base no documento, teste rejeição de formatos inválidos, teste OCR de PDF escaneado.</p>
-  </div>
-
-  <h2>Módulo 08 — Dashboard & Kanban (4 testes)</h2>
-  <div class="module" style="color: #93a5bb; font-size: 13px;">
-    <p>TC-035 até TC-040: Teste carregamento do Dashboard, mova cards no Kanban, verifique se métricas refletem dados reais, avalie usabilidade geral da plataforma.</p>
-  </div>
-
-  <div class="footer">
-    <strong>Juris Code V8 — Protocolo de Testes Beta</strong><br>
-    21/07–10/08/2026 | Contato: suporte@juriscode.com.br<br>
-    <br>
-    💡 <strong>Dica:</strong> Salve esta página (Ctrl+S) para manter seu progresso localmente. Ou envie as anotações via WhatsApp conforme conclui os testes.
-  </div>
-
+<div class="footer">
+  <strong style="color:#b8c5d8;">Juris Code V8</strong> · Programa Beta · 21/07–10/08/2026<br>
+  contato@juriscode.com.br · juriscode.com.br<br>
+  Suporte durante o beta: grupo WhatsApp Juris Code Beta
 </div>
 
 <script>
-function setStatus(btn, status) {
-  const testCase = btn.closest('.test-case');
-  const buttons = testCase.querySelectorAll('button');
+const TEST_IDS = ["TC-001", "TC-002", "TC-003", "TC-004", "TC-005", "TC-006", "TC-007", "TC-008", "TC-009", "TC-010", "TC-011", "TC-012", "TC-013", "TC-014", "TC-015", "TC-016", "TC-017", "TC-018", "TC-019", "TC-020", "TC-021", "TC-022", "TC-023", "TC-024", "TC-025", "TC-026", "TC-027", "TC-028", "TC-029", "TC-030", "TC-031", "TC-032", "TC-033", "TC-034", "TC-035", "TC-036", "TC-037", "TC-038", "TC-039", "TC-040"];
+const TOTAL = 40;
+const STORE_KEY = 'jc_beta_protocolo_v1';
 
-  // Remove classes anteriores
-  buttons.forEach(b => b.classList.remove('pass', 'fail', 'skip'));
+function loadStore() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || { tester:'', status:{}, notes:{} }; }
+  catch (e) { return { tester:'', status:{}, notes:{} }; }
+}
+function saveStore(store) { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
 
-  // Adiciona nova classe
-  btn.classList.add(status);
+let store = loadStore();
 
+function toggleCase(id) {
+  document.getElementById('case-' + id).classList.toggle('open');
+}
+
+function setStatus(id, action, btn) {
+  const current = store.status[id];
+  const next = current === action ? undefined : action;
+  if (next === undefined) delete store.status[id]; else store.status[id] = next;
+  saveStore(store);
+  renderCaseButtons(id);
   updateStats();
 }
 
-function saveNotes(textarea) {
-  const testCase = textarea.closest('.test-case');
-  const testId = testCase.querySelector('.test-id').textContent;
-  localStorage.setItem('notes_' + testId, textarea.value);
+function renderCaseButtons(id) {
+  const status = store.status[id];
+  const wrap = document.getElementById('case-' + id);
+  if (!wrap) return;
+  wrap.querySelectorAll('.btn-eval').forEach(b => {
+    b.classList.toggle('is-active', b.dataset.action === status);
+  });
+}
+
+function saveNotes(id, value) {
+  store.notes[id] = value;
+  saveStore(store);
+}
+
+function saveTesterName(value) {
+  store.tester = value;
+  saveStore(store);
 }
 
 function updateStats() {
   let pass = 0, fail = 0, skip = 0;
-  document.querySelectorAll('.test-case').forEach(tc => {
-    if (tc.querySelector('button.pass')) pass++;
-    if (tc.querySelector('button.fail')) fail++;
-    if (tc.querySelector('button.skip')) skip++;
+  TEST_IDS.forEach(id => {
+    const s = store.status[id];
+    if (s === 'pass') pass++;
+    else if (s === 'fail') fail++;
+    else if (s === 'skip') skip++;
   });
-
-  const total = 40; // Simplificado para 40 (primeiros 10 + resumos)
-  const pending = total - (pass + fail + skip);
-
+  const done = pass + fail + skip;
+  const pending = TOTAL - done;
   document.getElementById('passCount').textContent = pass;
   document.getElementById('failCount').textContent = fail;
   document.getElementById('skipCount').textContent = skip;
   document.getElementById('pendingCount').textContent = pending;
-
-  const progress = ((pass + fail + skip) / total) * 100;
-  document.getElementById('progressFill').style.width = progress + '%';
+  document.getElementById('sidebarDone').textContent = done;
+  const pct = TOTAL ? Math.round((done / TOTAL) * 100) : 0;
+  document.getElementById('sidebarProgressFill').style.width = pct + '%';
 }
 
-// Restaurar anotações ao carregar
+function exportResults() {
+  const tester = store.tester || '(nome não informado)';
+  const lines = [];
+  lines.push('JURIS CODE V8 — RELATÓRIO DE TESTES BETA');
+  lines.push('Testador: ' + tester);
+  lines.push('Data de exportação: ' + new Date().toLocaleString('pt-BR'));
+  lines.push('');
+  let pass=0, fail=0, skip=0, pend=0;
+  TEST_IDS.forEach(id => {
+    const s = store.status[id];
+    if (s === 'pass') pass++; else if (s === 'fail') fail++; else if (s === 'skip') skip++; else pend++;
+  });
+  lines.push(`Resumo: ${pass} aprovados | ${fail} reprovados | ${skip} pulados | ${pend} pendentes (de ${TOTAL})`);
+  lines.push('='.repeat(60));
+  TEST_IDS.forEach(id => {
+    const status = store.status[id];
+    const label = status === 'pass' ? 'APROVADO' : status === 'fail' ? 'REPROVADO' : status === 'skip' ? 'PULADO' : 'PENDENTE';
+    const el = document.getElementById('case-' + id);
+    const title = el ? el.querySelector('.tc-title').textContent : '';
+    const note = store.notes[id] || '';
+    lines.push('');
+    lines.push(id + ' — ' + title);
+    lines.push('Status: ' + label);
+    if (note) lines.push('Anotações: ' + note);
+  });
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = tester.replace(/[^a-z0-9]+/gi, '_') || 'testador';
+  a.href = url;
+  a.download = 'juriscode_testes_' + safeName + '.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function clearAll() {
+  if (!confirm('Isso vai apagar todas as marcações e anotações salvas neste navegador. Continuar?')) return;
+  store = { tester: store.tester, status: {}, notes: {} };
+  saveStore(store);
+  location.reload();
+}
+
 window.addEventListener('load', function() {
-  document.querySelectorAll('textarea').forEach(ta => {
-    const testId = ta.closest('.test-case').querySelector('.test-id').textContent;
-    const saved = localStorage.getItem('notes_' + testId);
-    if (saved) ta.value = saved;
+  const nameInput = document.getElementById('testerName');
+  if (store.tester) nameInput.value = store.tester;
+  TEST_IDS.forEach(id => {
+    renderCaseButtons(id);
+    const ta = document.querySelector('textarea.notes[data-testid="' + id + '"]');
+    if (ta && store.notes[id]) ta.value = store.notes[id];
   });
   updateStats();
 });
 </script>
-
 </body>
 </html>
