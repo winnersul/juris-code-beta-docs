@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Juris Code — Manual de Uso do Protocolo de Testes</title>
+<meta name="hz:slide-selector" content=".page">
+<meta name="hz:canvas-width" content="794">
+<meta name="hz:canvas-height" content="1123">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { background:#e7ebf0; }
+  body { font-family: Arial, Helvetica, sans-serif; display:flex; flex-direction:column; align-items:center; gap:24px; padding:24px 0 60px; }
+
+  .page {
+    position: relative;
+    width: 210mm;
+    height: 297mm;
+    background: #0d1b30;
+    color:#dce6f2;
+    overflow:hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  }
+  .page-pad { position:absolute; inset:0; padding:20mm 18mm 16mm; display:flex; flex-direction:column; }
+
+  /* shared type roles */
+  .eyebrow { font-size:10px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#45c0d4; margin-bottom:8px; }
+  h1.heading { font-size:26px; font-weight:700; color:#eaf2fc; line-height:1.2; margin-bottom:10px; }
+  h1.heading span { color:#6ea8e8; }
+  .lede { font-size:12.5px; color:#93a5bb; line-height:1.6; max-width:145mm; }
+  .step-badge { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#1A7A8A,#004A9F); color:#fff; font-family:'Courier New',monospace; font-weight:800; font-size:14px; flex-shrink:0; }
+  .footer-brand { position:absolute; left:18mm; right:18mm; bottom:12mm; display:flex; justify-content:space-between; align-items:center; font-size:9.5px; color:#5f7690; border-top:1px solid rgba(255,255,255,0.10); padding-top:8px; }
+  .footer-brand strong { color:#8fa2ba; }
+  .page-num { font-family:'Courier New',monospace; color:#45c0d4; }
+
+  /* illustration frame — mock "screenshot" chrome */
+  .illu-frame { background:#04203F; border:1px solid rgba(255,255,255,0.14); border-radius:10px; overflow:hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+  .illu-bar { display:flex; align-items:center; gap:6px; padding:8px 12px; background:#03192f; border-bottom:1px solid rgba(255,255,255,0.10); }
+  .illu-dot { width:8px; height:8px; border-radius:50%; }
+  .illu-dot.r { background:#f87171; } .illu-dot.y { background:#fbbf24; } .illu-dot.g { background:#4ade80; }
+  .illu-url { margin-left:10px; font-size:9px; color:#5f7690; font-family:'Courier New',monospace; }
+  .illu-body { padding:16px; background:#0d1b30; }
+  .illu-caption { font-size:9.5px; color:#5f7690; text-align:center; margin-top:6px; font-style:italic; }
+
+  .callout { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
+  .callout-num { width:20px; height:20px; border-radius:50%; background:rgba(69,192,212,0.16); border:1px solid rgba(69,192,212,0.45); color:#45c0d4; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'Courier New',monospace; margin-top:1px; }
+  .callout-text { font-size:12px; color:#b8c5d8; line-height:1.55; }
+  .callout-text strong { color:#eaf2fc; }
+
+  .tip-banner { background:linear-gradient(135deg, rgba(69,192,212,0.10), rgba(110,168,232,0.08)); border:1px solid rgba(110,168,232,0.28); border-radius:8px; padding:10px 14px; font-size:11.5px; color:#b8c5d8; line-height:1.55; margin-top:auto; }
+  .tip-banner strong { color:#e6b95c; }
+
+  @media print {
+    html, body { background:#0d1b30; padding:0; gap:0; }
+    .page { box-shadow:none; page-break-after: always; }
+    .page:last-child { page-break-after: auto; }
+    @page { size: A4; margin:0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ PAGE 1 — CAPA ============ -->
+<div class="page" data-canvas-width="794" data-canvas-height="1123">
+  <div class="page-pad" style="justify-content:center; align-items:flex-start; padding-left:24mm; padding-right:24mm;">
+    <div style="font-size:15px; font-weight:700; color:#fff; letter-spacing:0.02em; margin-bottom:60px;">JURIS CODE</div>
+    <div class="eyebrow">Programa Beta · 21/07–10/08/2026</div>
+    <h1 class="heading" style="font-size:38px; margin-bottom:16px;">Manual de Uso<br><span>Protocolo de Testes</span></h1>
+    <div class="lede" style="font-size:14px; max-width:130mm; margin-bottom:50px;">
+      Um guia rápido e ilustrado para você usar o formulário interativo de testes — abrir os casos, marcar resultados, anotar observações e enviar seu relatório final.
+    </div>
+
+    <div style="background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:20px 24px; width:100%; max-width:130mm;">
+      <div style="font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#8fa2ba; margin-bottom:12px;">Neste manual</div>
+      <div style="font-size:12.5px; color:#b8c5d8; line-height:2.1;">
+        <div>01 — Acessando o Protocolo</div>
+        <div>02 — Abrindo um caso de teste</div>
+        <div>03 — Marcando o resultado</div>
+        <div>04 — Anotações e progresso</div>
+        <div>05 — Exportando e enviando os resultados</div>
+        <div>06 — Dicas finais e suporte</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-brand">
+    <div><strong>Juris Code V8</strong> · contato@juriscode.com.br</div>
+    <div class="page-num">1 / 7</div>
+  </div>
+</div>
+
+<!-- ============ PAGE 2 — PASSO 1: ACESSANDO ============ -->
+<div class="page" data-canvas-width="794" data-canvas-height="1123">
+  <div class="page-pad">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+      <div class="step-badge">01</div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:2px;">Passo 1</div>
+        <h1 class="heading" style="font-size:22px; margin-bottom:0;">Acessando o Protocolo</h1>
+      </div>
+    </div>
+    <div class="lede" style="margin-bottom:20px;">Abra o link do Protocolo de Testes que você recebeu — pelo WhatsApp ou e-mail. Ele funciona em qualquer navegador (Chrome, Safari, Edge), no computador ou no celular.</div>
+
+    <div class="callout"><div class="callout-num">1</div><div class="callout-text">Clique no link recebido. A página abre direto — <strong>não precisa fazer login</strong>, o formulário é independente da plataforma Juris Code.</div></div>
+    <div class="callout"><div class="callout-num">2</div><div class="callout-text">À <strong>esquerda</strong> fica o menu de navegação: os 8 módulos de teste e a barra de progresso geral.</div></div>
+    <div class="callout"><div class="callout-num">3</div><div class="callout-text">No <strong>topo</strong> ficam as instruções gerais e o resumo com os contadores de Aprovados / Reprovados / Pulados / Pendentes.</div></div>
+
+    <!-- illustration: layout overview -->
+    <div class="illu-frame" style="margin-top:18px;">
+      <div class="illu-bar"><span class="illu-dot r"></span><span class="illu-dot y"></span><span class="illu-dot g"></span><span class="illu-url">juriscode-beta-docs.github.io/...</span></div>
+      <div class="illu-body" style="display:flex; gap:10px; padding:14px;">
+        <div style="width:28%; background:#04203F; border-radius:6px; padding:10px 8px;">
+          <div style="font-size:8px; font-weight:700; color:#fff; margin-bottom:8px;">JURIS CODE</div>
+          <div style="font-size:6.5px; font-weight:700; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:4px;">Módulos</div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <div style="font-size:7px; color:rgba(255,255,255,0.6); background:rgba(255,255,255,0.05); border-radius:3px; padding:3px 5px;">01 Autenticação</div>
+            <div style="font-size:7px; color:rgba(255,255,255,0.6); background:rgba(255,255,255,0.05); border-radius:3px; padding:3px 5px;">02 Copiloto IA</div>
+            <div style="font-size:7px; color:rgba(255,255,255,0.6); background:rgba(255,255,255,0.05); border-radius:3px; padding:3px 5px;">03 Agentes</div>
+            <div style="font-size:7px; color:rgba(255,255,255,0.35); padding:3px 5px;">... +5 módulos</div>
+          </div>
+          <div style="margin-top:10px; font-size:6.5px; font-weight:700; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-bottom:4px;">Progresso</div>
+          <div style="background:rgba(255,255,255,0.1); height:3px; border-radius:2px; overflow:hidden;"><div style="width:15%; height:100%; background:linear-gradient(90deg,#1A7A8A,#004A9F);"></div></div>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
+          <div style="font-size:9px; font-weight:700; color:#eaf2fc;">Protocolo de Testes Estruturado</div>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
+            <div style="background:#112340; border-radius:5px; padding:6px; text-align:center;"><div style="font-size:12px; font-weight:700; color:#4ade80; font-family:'Courier New',monospace;">3</div><div style="font-size:6px; color:#93a5bb; text-transform:uppercase;">Aprovados</div></div>
+            <div style="background:#112340; border-radius:5px; padding:6px; text-align:center;"><div style="font-size:12px; font-weight:700; color:#f87171; font-family:'Courier New',monospace;">0</div><div style="font-size:6px; color:#93a5bb; text-transform:uppercase;">Reprovados</div></div>
+            <div style="background:#112340; border-radius:5px; padding:6px; text-align:center;"><div style="font-size:12px; font-weight:700; color:#8fa2ba; font-family:'Courier New',monospace;">1</div><div style="font-size:6px; color:#93a5bb; text-transform:uppercase;">Pulados</div></div>
+            <div style="background:#112340; border-radius:5px; padding:6px; text-align:center;"><div style="font-size:12px; font-weight:700; color:#e6b95c; font-family:'Courier New',monospace;">36</div><div style="font-size:6px; color:#93a5bb; text-transform:uppercase;">Pendentes</div></div>
+          </div>
+          <div style="background:#0d1b30; border:1px solid rgba(255,255,255,0.14); border-radius:6px; padding:7px 9px; font-size:7px; color:#8fa2ba;">TC-001 · Login com credenciais válidas <span style="float:right; color:#f87171; background:rgba(220,38,38,0.15); padding:1px 5px; border-radius:8px;">Alta</span></div>
+          <div style="background:#0d1b30; border:1px solid rgba(255,255,255,0.14); border-radius:6px; padding:7px 9px; font-size:7px; color:#8fa2ba;">TC-002 · Login com senha incorreta <span style="float:right; color:#f87171; background:rgba(220,38,38,0.15); padding:1px 5px; border-radius:8px;">Alta</span></div>
+        </div>
+      </div>
+      <div class="illu-caption" style="padding-bottom:8px;">Ilustração da tela inicial — menu de módulos à esquerda, resumo e lista de testes à direita</div>
+    </div>
+
+    <div class="tip-banner"><strong>Dica:</strong> a URL exata do Protocolo é a que consta na mensagem que você recebeu do Leonardo pelo WhatsApp — salve-a nos favoritos do navegador para acessar rapidamente durante os testes.</div>
+  </div>
+  <div class="footer-brand"><div><strong>Juris Code V8</strong> · contato@juriscode.com.br</div><div class="page-num">2 / 7</div></div>
+</div>
+
+<!-- ============ PAGE 3 — PASSO 2: ABRIR CASO DE TESTE ============ -->
+<div class="page" data-canvas-width="794" data-canvas-height="1123">
+  <div class="page-pad">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+      <div class="step-badge">02</div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:2px;">Passo 2</div>
+        <h1 class="heading" style="font-size:22px; margin-bottom:0;">Abrindo um Caso de Teste</h1>
+      </div>
+    </div>
+    <div class="lede" style="margin-bottom:20px;">Cada teste tem um código (ex: <strong style="color:#dce6f2;">TC-001</strong>), um título e uma etiqueta de prioridade. Clique em qualquer parte da linha para expandir e ver os detalhes.</div>
+
+    <div class="illu-frame">
+      <div class="illu-bar"><span class="illu-dot r"></span><span class="illu-dot y"></span><span class="illu-dot g"></span><span class="illu-url">Antes de clicar — fechado</span></div>
+      <div class="illu-body">
+        <div style="background:#0d1b30; border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:10px 12px; display:flex; align-items:center; gap:10px;">
+          <span style="font-family:'Courier New',monospace; font-size:9px; font-weight:700; color:#8fa2ba;">TC-006</span>
+          <span style="font-size:10.5px; font-weight:600; color:#dce6f2; flex:1;">Pergunta jurídica básica (civil)</span>
+          <span style="font-size:7px; font-weight:700; padding:2px 7px; border-radius:9999px; background:rgba(220,38,38,0.1); color:#f87171; text-transform:uppercase;">Alta</span>
+          <span style="font-size:9px; color:#8fa2ba;">▾</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; font-size:16px; color:#45c0d4; margin:10px 0;">↓ clique no título ↓</div>
+
+    <div class="illu-frame">
+      <div class="illu-bar"><span class="illu-dot r"></span><span class="illu-dot y"></span><span class="illu-dot g"></span><span class="illu-url">Depois de clicar — aberto</span></div>
+      <div class="illu-body">
+        <div style="background:#0d1b30; border:1px solid rgba(255,255,255,0.14); border-radius:8px; overflow:hidden;">
+          <div style="padding:10px 12px; display:flex; align-items:center; gap:10px; border-bottom:1px solid rgba(255,255,255,0.14);">
+            <span style="font-family:'Courier New',monospace; font-size:9px; font-weight:700; color:#8fa2ba;">TC-006</span>
+            <span style="font-size:10.5px; font-weight:600; color:#dce6f2; flex:1;">Pergunta jurídica básica (civil)</span>
+            <span style="font-size:7px; font-weight:700; padding:2px 7px; border-radius:9999px; background:rgba(220,38,38,0.1); color:#f87171; text-transform:uppercase;">Alta</span>
+            <span style="font-size:9px; color:#8fa2ba; transform:rotate(180deg); display:inline-block;">▾</span>
+          </div>
+          <div style="padding:12px;">
+            <div style="font-size:7.5px; font-weight:700; color:#8fa2ba; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:5px;">Pergunta a digitar</div>
+            <div style="font-size:9px; color:#45c0d4; font-style:italic; margin-bottom:10px;">"Qual o prazo prescricional para ação de cobrança de honorários advocatícios?"</div>
+            <div style="font-size:7.5px; font-weight:700; color:#4ade80; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:5px; background:rgba(74,222,128,0.08); display:inline-block; padding:6px 8px; border-radius:6px;">✓ Critérios de Aprovação</div>
+            <div style="font-size:8.5px; color:#b8c5d8; margin-top:6px; line-height:1.7;">✓ Cita o Art. 206, §5º, II do CC/2002 (5 anos)<br>✓ Menciona pelo menos uma fonte legal<br>✓ Resposta em menos de 30 segundos</div>
+          </div>
+        </div>
+      </div>
+      <div class="illu-caption" style="padding-bottom:8px;">O caso expande e revela: a pergunta/passos a executar, os critérios de aprovação e o campo de anotações</div>
+    </div>
+
+    <div class="callout" style="margin-top:16px;"><div class="callout-num">✓</div><div class="callout-text">Execute os passos <strong>na plataforma Juris Code de verdade</strong> (juriscode.com.br) e depois volte para este formulário para marcar o resultado.</div></div>
+  </div>
+  <div class="footer-brand"><div><strong>Juris Code V8</strong> · contato@juriscode.com.br</div><div class="page-num">3 / 7</div></div>
+</div>
+
+<!-- ============ PAGE 4 — PASSO 3: MARCAR RESULTADO ============ -->
+<div class="page" data-canvas-width="794" data-canvas-height="1123">
+  <div class="page-pad">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+      <div class="step-badge">03</div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:2px;">Passo 3</div>
+        <h1 class="heading" style="font-size:22px; margin-bottom:0;">Marcando o Resultado</h1>
+      </div>
+    </div>
+    <div class="lede" style="margin-bottom:22px;">No canto direito de cada teste há três botões redondos. Clique no que corresponde ao resultado que você observou.</div>
+
+    <div style="display:flex; gap:16px; margin-bottom:22px;">
+      <div style="flex:1; background:#112340; border:1px solid rgba(74,222,128,0.35); border-radius:10px; padding:16px; text-align:center;">
+        <div style="width:38px; height:38px; border-radius:50%; border:2px solid #4ade80; background:rgba(40,167,69,0.18); color:#4ade80; font-size:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">✓</div>
+        <div style="font-size:11.5px; font-weight:700; color:#4ade80; margin-bottom:4px;">APROVADO</div>
+        <div style="font-size:10.5px; color:#93a5bb; line-height:1.5;">A plataforma se comportou exatamente como descrito nos critérios de aprovação.</div>
+      </div>
+      <div style="flex:1; background:#112340; border:1px solid rgba(220,38,38,0.35); border-radius:10px; padding:16px; text-align:center;">
+        <div style="width:38px; height:38px; border-radius:50%; border:2px solid #f87171; background:rgba(220,38,38,0.18); color:#f87171; font-size:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">✗</div>
+        <div style="font-size:11.5px; font-weight:700; color:#f87171; margin-bottom:4px;">REPROVADO</div>
+        <div style="font-size:10.5px; color:#93a5bb; line-height:1.5;">Algo não funcionou como esperado. <strong style="color:#b8c5d8;">Sempre descreva o que aconteceu</strong> nas anotações.</div>
+      </div>
+      <div style="flex:1; background:#112340; border:1px solid rgba(148,163,184,0.35); border-radius:10px; padding:16px; text-align:center;">
+        <div style="width:38px; height:38px; border-radius:50%; border:2px solid #8fa2ba; background:rgba(148,163,184,0.15); color:#8fa2ba; font-size:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">⊘</div>
+        <div style="font-size:11.5px; font-weight:700; color:#8fa2ba; margin-bottom:4px;">PULADO</div>
+        <div style="font-size:10.5px; color:#93a5bb; line-height:1.5;">Você não conseguiu ou não teve tempo de executar este teste agora.</div>
+      </div>
+    </div>
+
+    <div class="callout"><div class="callout-num">i</div><div class="callout-text">O botão clicado fica <strong>destacado com a cor</strong> correspondente. Se clicar de novo no mesmo botão, a marcação é desfeita (fica pendente novamente).</div></div>
+    <div class="callout"><div class="callout-num">i</div><div class="callout-text">Sua marcação é <strong>salva automaticamente</strong> no navegador — não existe botão "Salvar". Só não limpe o histórico/cache do navegador antes de exportar os resultados (Passo 5).</div></div>
+
+    <div class="illu-frame" style="margin-top:16px;">
+      <div class="illu-bar"><span class="illu-dot r"></span><span class="illu-dot y"></span><span class="illu-dot g"></span><span class="illu-url">Exemplo: teste marcado como Aprovado</span></div>
+      <div class="illu-body">
+        <div style="background:#0d1b30; border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:10px 12px; display:flex; align-items:center; gap:10px;">
+          <span style="font-family:'Courier New',monospace; font-size:9px; font-weight:700; color:#8fa2ba;">TC-001</span>
+          <span style="font-size:10.5px; font-weight:600; color:#dce6f2; flex:1;">Login com credenciais válidas</span>
+          <div style="display:flex; gap:6px; flex-shrink:0;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:1px;"><div style="width:20px; height:20px; border-radius:50%; border:2px solid #4ade80; background:rgba(40,167,69,0.18); color:#4ade80; font-size:9px; display:flex; align-items:center; justify-content:center;">✓</div><span style="font-size:6px; color:rgba(255,255,255,0.4);">APROVADO</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:1px;"><div style="width:20px; height:20px; border-radius:50%; border:2px solid rgba(220,38,38,0.4); color:#f87171; font-size:9px; display:flex; align-items:center; justify-content:center;">✗</div><span style="font-size:6px; color:rgba(255,255,255,0.4);">REPROVADO</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:1px;"><div style="width:20px; height:20px; border-radius:50%; border:2px solid rgba(148,163,184,0.4); color:#8fa2ba; font-size:9px; display:flex; align-items:center; justify-content:center;">⊘</div><span style="font-size:6px; color:rgba(255,255,255,0.4);">PULADO</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="illu-caption" style="padding-bottom:8px;">O botão ✓ fica preenchido em verde — os outros dois permanecem neutros</div>
+    </div>
+  </div>
+  <div class="footer-brand"><div><strong>Juris Code V8</strong> · contato@juriscode.com.br</div><div class="page-num">4 / 7</div></div>
+</div>
+
+<!-- ============ PAGE 5 — PASSO 4: ANOTAÇÕES E PROGRESSO ============ -->
+<div class="page" data-canvas-width="794" data-canvas-height="1123">
+  <div class="page-pad">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+      <div class="step-badge">04</div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:2px;">Passo 4</div>
+        <h1 class="heading" style="font-size:22px; margin-bottom:0;">Anotações e Progresso</h1>
+      </div>
+    </div>
+    <div class="lede" style="margin-bottom:16px;">Abaixo dos critérios de cada teste há um campo de texto livre. Use-o sempre — mesmo quando o teste for aprovado.</div>
+
+    <div class="illu-frame">
+      <div class="illu-bar"><span class="illu-dot r"></span><span class="illu-dot y"></span><span class="illu-dot g"></span><span class="illu-url">Campo de anotações</span></div>
+      <div class="illu-body">
+        <div style="background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:10px 12px; font-size:9.5px; color:#7a8ba3; font-style:italic;">Cole aqui a resposta da IA ou descreva o resultado...</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:14px;"><div class="callout-num">✎</div><div class="callout-text">Quanto <strong>mais detalhes</strong>, mais fácil é para a equipe entender e corrigir. Prints de tela podem ser enviados depois, direto no grupo do WhatsApp, citando o código do teste (ex: "TC-007").</div></div>
+
+    <div class="lede" style="margin:22px 0 16px;">No topo da página, o <strong style="color:#dce6f2;">Resumo de Progresso</strong> mostra em tempo real quantos testes você já avaliou — atualiza sozinho a cada clique.</div>
+
+    <div class="illu-frame">
+      <div class="illu-bar"><span class="illu-dot r"></span><span class="illu-dot y"></span><span class="illu-dot g"></span><span class="illu-url">Resumo de Progresso</span></div>
+      <div class="illu-body" style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
+        <div style="background:#112340; border-radius:6px; padding:10px; text-align:center;"><div style="font-size:18px; font-weight:700; color:#4ade80; font-family:'Courier New',monospace;">12</div><div style="font-size:7px; color:#93a5bb; text-transform:uppercase;">Aprovados</div><div style="font-size:8px; color:#4ade80; margin-top:4px;">✓ Aprovado</div></div>
+        <div style="background:#112340; border-radius:6px; padding:10px; text-align:center;"><div style="font-size:18px; font-weight:700; color:#f87171; font-family:'Courier New',monospace;">2</div><div style="font-size:7px; color:#93a5bb; text-transform:uppercase;">Reprovados</div><div style="font-size:8px; color:#f87171; margin-top:4px;">✗ Reprovado</div></div>
+        <div style="background:#112340; border-radius:6px; padding:10px; text-align:center;"><div style="font-size:18px; font-weight:700; color:#8fa2ba; font-family:'Courier New',monospace;">1</div><div style="font-size:7px; color:#93a5bb; text-transform:uppercase;">Pulados</div><div style="font-size:8px; color:#8fa2ba; margin-top:4px;">⊘ Pulado</div></div>
+        <div style="background:#112340; border-radius:6px; padding:10px; text-align:center;"><div style="font-size:18px; font-weight:700; color:#e6b95c; font-family:'Courier New',monospace;">25</div><div style="font-size:7px; color:#93a5bb; text-transform:uppercase;">Pendentes</div><div style="font-size:8px; color:#e6b95c; margin-top:4px;">— Sem avaliação</div></div>
+      </div>
+      <div class="illu-caption" style="padding-bottom:8px;">A barra de progresso da barra lateral (esquerda) também acompanha esses números</div>
+    </div>
+
+    <div class="tip-banner"><strong>Dica:</strong> não existe ordem obrigatória. Você pode pular entre módulos e voltar depois — o formulário guarda tudo que já foi marcado.</div>
+  </div>
+  <div class="footer-brand"><div><strong>Juris Code V8</strong> · contato@juriscode.com.br</div><div class="page-num">5 / 7</div></div>
+</div>
+
+<!-- ============ PAGE 6 — PASSO 5: EXPORTAR ============ -->
+<div class="page" data-canvas-width="794" data-canvas-height="1123">
+  <div class="page-pad">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+      <div class="step-badge">05</div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:2px;">Passo 5</div>
+        <h1 class="heading" style="font-size:22px; margin-bottom:0;">Exportando e Enviando os Resultados</h1>
+      </div>
+    </div>
+    <div class="lede" style="margin-bottom:18px;">Quando terminar (ou sempre que quiser gerar um retrato do seu progresso), gere o relatório e envie para a equipe.</div>
+
+    <div class="callout"><div class="callout-num">1</div><div class="callout-text">Preencha o campo <strong>"Seu nome"</strong> no topo da página (uma única vez) — ele identifica o relatório exportado.</div></div>
+    <div class="callout"><div class="callout-num">2</div><div class="callout-text">Clique no botão <strong>"⬇ Exportar Resultados (.txt)"</strong>, logo abaixo do Resumo de Progresso.</div></div>
+    <div class="callout"><div class="callout-num">3</div><div class="callout-text">Um arquivo <strong>.txt</strong> é baixado automaticamente para a pasta de downloads do seu computador ou celular.</div></div>
+    <div class="callout"><div class="callout-num">4</div><div class="callout-text">Envie esse arquivo para o grupo do WhatsApp <strong>Juris Code Beta</strong> ou por e-mail para <strong style="color:#dce6f2;">contato@juriscode.com.br</strong>.</div></div>
+
+    <div class="illu-frame" style="margin-top:14px;">
+      <div class="illu-bar"><span class="illu-dot r"></span><span class="illu-dot y"></span><span class="illu-dot g"></span><span class="illu-url">Botão de exportação</span></div>
+      <div class="illu-body" style="display:flex; gap:10px;">
+        <div style="background:linear-gradient(135deg,#1A7A8A,#004A9F); color:#fff; font-size:10px; font-weight:700; padding:9px 16px; border-radius:8px;">⬇ Exportar Resultados (.txt)</div>
+        <div style="background:#112340; border:1px solid rgba(255,255,255,0.14); color:#b8c5d8; font-size:10px; font-weight:600; padding:9px 16px; border-radius:8px;">↺ Limpar tudo</div>
+      </div>
+    </div>
+
+    <div class="lede" style="margin:16px 0 8px; font-size:11.5px;">Exemplo do conteúdo do relatório exportado:</div>
+    <div style="background:#000; border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:12px 14px; font-family:'Courier New',monospace; font-size:8.5px; color:#7fdba0; line-height:1.65;">
+JURIS CODE V8 — RELATÓRIO DE TESTES BETA<br>
+Testador: Dorine Loth Soares Garcia<br>
+Data de exportação: 22/07/2026 18:42:10<br>
+<br>
+Resumo: 12 aprovados | 2 reprovados | 1 pulados | 25 pendentes (de 40)<br>
+============================================================<br>
+<br>
+TC-001 — Login com credenciais válidas<br>
+Status: APROVADO<br>
+<br>
+TC-007 — Pergunta trabalhista com cálculo<br>
+Status: REPROVADO<br>
+Anotações: IA não ativou o Perito Calculista, respondeu de forma genérica<br>
+    </div>
+
+    <div class="tip-banner" style="margin-top:14px;"><strong>Importante:</strong> o progresso fica salvo no navegador daquele computador/celular específico. Se trocar de aparelho, comece do zero nele — por isso vale exportar periodicamente, não só no final.</div>
+  </div>
+  <div class="footer-brand"><div><strong>Juris Code V8</strong> · contato@juriscode.com.br</div><div class="page-num">6 / 7</div></div>
+</div>
+
+<!-- ============ PAGE 7 — DICAS FINAIS ============ -->
+<div class="page" data-canvas-width="794" data-canvas-height="1123">
+  <div class="page-pad">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:20px;">
+      <div class="step-badge">✓</div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:2px;">Para fechar</div>
+        <h1 class="heading" style="font-size:22px; margin-bottom:0;">Dicas Finais e Suporte</h1>
+      </div>
+    </div>
+
+    <div style="background:#112340; border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:18px 20px; margin-bottom:16px;">
+      <div style="font-size:12px; font-weight:700; color:#eaf2fc; margin-bottom:12px;">Resumo do fluxo completo</div>
+      <div style="font-size:11px; color:#b8c5d8; line-height:2.1;">
+        1. Abra o link do Protocolo → 2. Clique no título do teste para expandir → 3. Execute os passos na plataforma juriscode.com.br → 4. Marque ✓ / ✗ / ⊘ → 5. Escreva uma anotação → 6. Repita para os 40 testes (na sua ordem preferida) → 7. Exporte e envie o relatório.
+      </div>
+    </div>
+
+    <div class="callout"><div class="callout-num">💡</div><div class="callout-text">Não precisa fazer tudo de uma vez. Você tem <strong>20 dias</strong> (21/07–10/08/2026) — divida os módulos ao longo dos dias.</div></div>
+    <div class="callout"><div class="callout-num">💡</div><div class="callout-text">Os testes de IA (Módulos 02 e 03) consomem sua cota de <strong>150 consultas</strong> compartilhadas do escritório — use com moderação, mas sem medo: dá para pedir mais se precisar.</div></div>
+    <div class="callout"><div class="callout-num">💡</div><div class="callout-text">Encontrou algo que não está neste manual ou tem dúvida sobre um teste específico? Pergunte no grupo do WhatsApp — cite sempre o código do teste (ex: "TC-018").</div></div>
+
+    <div class="tip-banner" style="margin-top:22px; font-size:12.5px; padding:16px 18px;">
+      <strong style="color:#eaf2fc; display:block; font-size:13px; margin-bottom:4px;">Seu feedback é o produto</strong>
+      Cada teste marcado e cada anotação escrita molda a versão final do Juris Code. Obrigado por fazer parte do beta.
+    </div>
+
+    <div style="margin-top:auto; text-align:center; font-size:10.5px; color:#5f7690; line-height:1.8;">
+      <strong style="color:#8fa2ba;">Suporte durante o beta:</strong> grupo WhatsApp Juris Code Beta · contato@juriscode.com.br<br>
+      juriscode.com.br · Programa Beta 21/07–10/08/2026
+    </div>
+  </div>
+  <div class="footer-brand"><div><strong>Juris Code V8</strong> · contato@juriscode.com.br</div><div class="page-num">7 / 7</div></div>
+</div>
+
+</body>
+</html>
