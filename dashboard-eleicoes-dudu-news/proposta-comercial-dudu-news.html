@@ -1,0 +1,164 @@
+<title>Proposta Comercial</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  @page{ size:A4; margin:15mm 16mm 16mm; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:#ffffff;
+    color:#1c1d22;
+    font-family:'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
+    font-size:10.4pt;
+    line-height:1.42;
+  }
+  h1,h2,h3{ font-family:'Fraunces', Georgia, serif; color:#132840; margin:0; }
+  .accent{ color:#1e3a5f; }
+  .urgent{ color:#a8401f; }
+  code, .mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; }
+
+  header.head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    border-bottom:2px solid #132840; padding-bottom:8px; margin-bottom:12px;
+  }
+  .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:8.5pt; letter-spacing:0.08em; text-transform:uppercase; color:#1e3a5f; margin-bottom:4px; }
+  h1{ font-size:19pt; line-height:1.05; }
+  .head-right{ text-align:right; font-size:8.7pt; color:#54575f; }
+  .head-right b{ color:#1c1d22; }
+
+  .intro{ font-size:10.6pt; color:#33353b; margin: 10px 0 14px; }
+
+  h2.sec{ font-size:11.8pt; margin: 14px 0 6px; padding-bottom:2px; border-bottom:1px solid #ddd7c8; }
+  h2.sec .n{ font-family:'IBM Plex Mono',monospace; font-size:9pt; color:#1e3a5f; margin-right:6px; }
+
+  ul{ margin:4px 0 8px; padding-left:1.05em; }
+  li{ margin-bottom:2.5px; }
+  p{ margin:0 0 8px; }
+
+  .glossary{ font-size:8.9pt; color:#54575f; font-style:italic; }
+
+  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:0 18px; }
+
+  .limit-box{
+    background:#f4ead2; border:1px solid #dcb45f; border-radius:6px;
+    padding:8px 10px; font-size:9.3pt; margin:6px 0 4px;
+  }
+  .limit-box b{ color:#93650f; }
+
+  table{ width:100%; border-collapse:collapse; font-size:9.1pt; margin:4px 0 8px; }
+  th,td{ text-align:left; padding:4px 7px; border-bottom:1px solid #e9e4d8; vertical-align:top; }
+  thead th{ font-family:'IBM Plex Mono',monospace; font-size:7.8pt; letter-spacing:0.03em; text-transform:uppercase; color:#8b8e95; border-bottom:1px solid #132840; }
+  td.num, th.num{ text-align:right; font-family:'IBM Plex Mono',monospace; }
+  tr.total td{ border-top:1.5px solid #132840; border-bottom:none; font-weight:700; padding-top:6px; }
+  tr.total .val{ color:#1e3a5f; }
+
+  .price-band{
+    background:#e7ecf2; border:1px solid #c6d3e1; border-left:4px solid #1e3a5f;
+    border-radius:6px; padding:10px 12px; margin:6px 0 10px; display:flex; justify-content:space-between; align-items:center; gap:10px;
+  }
+  .price-band .lbl{ font-size:9.6pt; color:#132840; max-width:60%; }
+  .price-band .val{ font-family:'Fraunces',serif; font-weight:700; font-size:18pt; color:#1e3a5f; white-space:nowrap; }
+
+  .footnote{ font-size:8.4pt; color:#8b8e95; }
+
+  .pagebreak{ page-break-before: always; }
+
+  footer.pg{
+    position:running(footer);
+  }
+  .foot-row{ display:flex; justify-content:space-between; font-size:7.8pt; color:#8b8e95; border-top:1px solid #e9e4d8; padding-top:5px; margin-top:10px; }
+</style>
+
+<header class="head">
+  <div>
+    <div class="eyebrow">Proposta Comercial &middot; 11/09/2026</div>
+    <h1>Dashboard de Cobertura Eleitoral em Tempo Real</h1>
+  </div>
+  <div class="head-right">
+    Preparada para<br><b>Dudu News</b><br>
+    Validade: 15 dias &middot; Elaborada por Ângelo Fernando Da
+  </div>
+</header>
+
+<p class="intro">Esta proposta descreve um painel digital ao vivo para acompanhar a apuração das <b>Eleições 2026</b> (1º turno em 04/10 e eventual 2º turno em 25/10), em nível nacional e por estado, com apoio de Inteligência Artificial (IA) para agilizar o trabalho da redação — sem nunca inventar um único voto. Termos técnicos aparecem explicados entre parênteses na primeira vez em que são usados.</p>
+
+<h2 class="sec"><span class="n">01</span>O que é e o que entra no escopo</h2>
+<div class="cols">
+  <div>
+    <p style="margin-bottom:4px"><b>O painel mostra, atualizando sozinho:</b></p>
+    <ul>
+      <li>Resultado nacional e das 27 unidades da federação (UFs)</li>
+      <li>Percentual de seções já apuradas, votos brancos/nulos e comparecimento</li>
+      <li>Alertas automáticos quando uma disputa fica apertada ou o líder muda</li>
+      <li>Resumos de texto em cada estado, escritos por IA e sempre revisados por um jornalista antes de publicar</li>
+      <li>Funciona no celular, sem precisar instalar aplicativo</li>
+    </ul>
+  </div>
+  <div>
+    <p style="margin-bottom:4px"><b>De onde vêm os números:</b></p>
+    <p>Diretamente dos arquivos públicos que o próprio Tribunal Superior Eleitoral (TSE) libera durante a apuração — o mesmo mecanismo que G1, UOL e Folha usam para seus painéis. É gratuito, não exige cadastro, e o acesso é amparado pela Lei de Acesso à Informação — que garante o acesso, mas não substitui a validação dos termos de uso/reuso do próprio TSE para funcionalidades como os resumos automáticos e os widgets, algo que faz parte do início do projeto (item 05).</p>
+  </div>
+</div>
+
+<h2 class="sec"><span class="n">02</span>Limitações desta fase — o que fica de fora</h2>
+<div class="limit-box">
+  <b>Importante:</b> o prazo até o 1º turno é de ~3 semanas, curto demais para tudo. Ficam <b>fora</b> desta entrega: apuração paralela própria (conferência independente dos boletins de urna), projeção estatística de quem vai vencer, cruzamento com perfil de eleitor (idade/renda — o TSE não fornece isso), e a IA nunca publica sozinha — todo texto passa por um humano. O painel também depende da estabilidade do próprio site do TSE na noite da eleição; se ele cair, o nosso sistema exibe o último dado confiável, sem travar.
+</div>
+
+<h2 class="sec"><span class="n">03</span>Como funciona por trás (arquitetura, em linguagem simples)</h2>
+<p>Um serviço próprio <b>busca os dados públicos do TSE</b> automaticamente a cada 15–30 segundos (isso é o que se chama de <span class="glossary">API — a "porta" por onde um sistema pede dados a outro, sem intervenção manual</span>), <b>guarda tudo organizado</b> em um banco de dados, e <b>envia para a tela do leitor em tempo real</b> (o número atualiza sozinho, sem precisar apertar F5). A camada de IA só <b>lê</b> esses números já confirmados para escrever resumos e alertas — ela nunca cria ou "adivinha" um número de votos; essa é a regra de segurança mais importante do projeto.</p>
+
+<div class="pagebreak"></div>
+
+<h2 class="sec"><span class="n">04</span>Ferramentas usadas e custo (priorizando o que é gratuito)</h2>
+<table>
+  <thead><tr><th>Ferramenta</th><th>Para que serve</th><th class="num">Custo estimado</th></tr></thead>
+  <tbody>
+    <tr><td>Banco de dados (Postgres/Neon)</td><td>Guarda o histórico da apuração</td><td class="num">Gratuito (plano free)</td></tr>
+    <tr><td>Hospedagem do site (Vercel, plano Pro)</td><td>Publica o painel na internet</td><td class="num">R$ 100–150/mês*</td></tr>
+    <tr><td>Atualização em tempo real (Redis/Upstash)</td><td>Empurra os números novos para a tela</td><td class="num">Gratuito (plano free)</td></tr>
+    <tr><td>IA de texto (OpenAI GPT-4o)</td><td>Escreve os resumos e alertas</td><td class="num">R$ 300 – 800 (uso das 2 noites)</td></tr>
+  </tbody>
+</table>
+<p class="footnote">*O plano gratuito da Vercel é restrito a uso pessoal/não-comercial pelos termos da própria empresa; por ser um projeto comercial, orçamos o plano pago desde o início, não como upgrade eventual — cancelável logo após a eleição.</p>
+
+<h2 class="sec"><span class="n">05</span>Cronograma</h2>
+<table>
+  <thead><tr><th>Quando</th><th>Entrega</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">Semana 1 (início em até 48h)</td><td>Conexão com os dados do TSE + banco de dados + painel nacional básico</td></tr>
+    <tr><td class="mono">Semana 2</td><td>Páginas dos 27 estados + alertas automáticos + resumos de IA em teste</td></tr>
+    <tr><td class="mono">Semana 3</td><td>Simulação com dados de eleições passadas, ajustes finais, treino da redação</td></tr>
+    <tr><td class="mono">04/10 — 1º turno</td><td>Cobertura ao vivo, com acompanhamento técnico</td></tr>
+    <tr><td class="mono">25/10 — 2º turno (se houver)</td><td>Reativação do painel para o segundo turno</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sec"><span class="n">06</span>Investimento</h2>
+<table>
+  <tbody>
+    <tr><td>Desenvolvimento do painel (3 semanas)</td><td class="num">R$ 24.000</td></tr>
+    <tr><td>Acompanhamento ao vivo — 1º turno (04/10)</td><td class="num">R$ 1.500</td></tr>
+    <tr><td>Ajustes e correções nos 7 dias após a entrega</td><td class="num">Incluso</td></tr>
+    <tr class="total"><td>Total garantido (só 1º turno)</td><td class="num val">R$ 25.500</td></tr>
+    <tr><td>+ Acompanhamento ao vivo — 2º turno (25/10, somente se houver)</td><td class="num">+ R$ 1.500</td></tr>
+    <tr class="total"><td>Total máximo (se houver 2º turno)</td><td class="num val">R$ 27.000</td></tr>
+  </tbody>
+</table>
+<div class="price-band">
+  <div class="lbl">IA (item 04), variável conforme uso real, faturado à parte</div>
+  <div class="val">R$ 500–1.500</div>
+</div>
+<div class="price-band">
+  <div class="lbl">Hospedagem comercial (Vercel Pro, item 04), mensal enquanto o serviço estiver no ar</div>
+  <div class="val">R$ 100–150/mês</div>
+</div>
+<p class="footnote"><b>Condição de pagamento sugerida:</b> 50% na aprovação (para viabilizar o início imediato, dado o prazo) e 50% na entrega, antes de 04/10. Valores negociáveis conforme ajuste fino de escopo.</p>
+
+<h2 class="sec"><span class="n">07</span>Por que decidir agora</h2>
+<p>Faltam ~23 dias para o 1º turno. Esse é o fator determinante do escopo e do preço acima: um projeto sério, mas deliberadamente enxuto, para chegar pronto e testado no dia da eleição — deixando de fora, por segurança, tudo que exigiria mais tempo de validação. Uma versão mais completa (apuração paralela própria, projeções, produto white-label) pode ser desenhada como fase seguinte, com vistas às eleições municipais de 2028.</p>
+
+<div class="foot-row">
+  <span>Proposta técnica-comercial &middot; Dashboard de Cobertura Eleitoral &middot; Dudu News</span>
+  <span>11/09/2026</span>
+</div>
