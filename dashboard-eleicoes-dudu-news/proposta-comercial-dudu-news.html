@@ -96,7 +96,7 @@
   </div>
   <div>
     <p style="margin-bottom:4px"><b>De onde vêm os números:</b></p>
-    <p>Diretamente dos arquivos públicos que o próprio Tribunal Superior Eleitoral (TSE) libera durante a apuração — o mesmo mecanismo que G1, UOL e Folha usam para seus painéis. É gratuito, não exige cadastro, e o uso jornalístico é amparado pela Lei de Acesso à Informação.</p>
+    <p>Diretamente dos arquivos públicos que o próprio Tribunal Superior Eleitoral (TSE) libera durante a apuração — o mesmo mecanismo que G1, UOL e Folha usam para seus painéis. É gratuito, não exige cadastro, e o acesso é amparado pela Lei de Acesso à Informação — que garante o acesso, mas não substitui a validação dos termos de uso/reuso do próprio TSE para funcionalidades como os resumos automáticos e os widgets, algo que faz parte do início do projeto (item 05).</p>
   </div>
 </div>
 
@@ -115,12 +115,12 @@
   <thead><tr><th>Ferramenta</th><th>Para que serve</th><th class="num">Custo estimado</th></tr></thead>
   <tbody>
     <tr><td>Banco de dados (Postgres/Neon)</td><td>Guarda o histórico da apuração</td><td class="num">Gratuito (plano free)</td></tr>
-    <tr><td>Hospedagem do site (Vercel)</td><td>Publica o painel na internet</td><td class="num">Gratuito*</td></tr>
+    <tr><td>Hospedagem do site (Vercel, plano Pro)</td><td>Publica o painel na internet</td><td class="num">R$ 100–150/mês*</td></tr>
     <tr><td>Atualização em tempo real (Redis/Upstash)</td><td>Empurra os números novos para a tela</td><td class="num">Gratuito (plano free)</td></tr>
     <tr><td>IA de texto (OpenAI GPT-4o)</td><td>Escreve os resumos e alertas</td><td class="num">R$ 300 – 800 (uso das 2 noites)</td></tr>
   </tbody>
 </table>
-<p class="footnote">*Gratuito no volume normal; se o pico de acessos for muito grande, pode ser necessário um upgrade de ~R$ 100/mês, cancelável logo após a eleição.</p>
+<p class="footnote">*O plano gratuito da Vercel é restrito a uso pessoal/não-comercial pelos termos da própria empresa; por ser um projeto comercial, orçamos o plano pago desde o início, não como upgrade eventual — cancelável logo após a eleição.</p>
 
 <h2 class="sec"><span class="n">05</span>Cronograma</h2>
 <table>
@@ -139,14 +139,19 @@
   <tbody>
     <tr><td>Desenvolvimento do painel (3 semanas)</td><td class="num">R$ 24.000</td></tr>
     <tr><td>Acompanhamento ao vivo — 1º turno (04/10)</td><td class="num">R$ 1.500</td></tr>
-    <tr><td>Acompanhamento ao vivo — 2º turno (25/10, se houver)</td><td class="num">R$ 1.500</td></tr>
     <tr><td>Ajustes e correções nos 7 dias após a entrega</td><td class="num">Incluso</td></tr>
-    <tr class="total"><td>Total do serviço</td><td class="num val">R$ 27.000</td></tr>
+    <tr class="total"><td>Total garantido (só 1º turno)</td><td class="num val">R$ 25.500</td></tr>
+    <tr><td>+ Acompanhamento ao vivo — 2º turno (25/10, somente se houver)</td><td class="num">+ R$ 1.500</td></tr>
+    <tr class="total"><td>Total máximo (se houver 2º turno)</td><td class="num val">R$ 27.000</td></tr>
   </tbody>
 </table>
 <div class="price-band">
-  <div class="lbl">Custo de infraestrutura (item 04), variável conforme uso real, faturado à parte</div>
+  <div class="lbl">IA (item 04), variável conforme uso real, faturado à parte</div>
   <div class="val">R$ 500–1.500</div>
+</div>
+<div class="price-band">
+  <div class="lbl">Hospedagem comercial (Vercel Pro, item 04), mensal enquanto o serviço estiver no ar</div>
+  <div class="val">R$ 100–150/mês</div>
 </div>
 <p class="footnote"><b>Condição de pagamento sugerida:</b> 50% na aprovação (para viabilizar o início imediato, dado o prazo) e 50% na entrega, antes de 04/10. Valores negociáveis conforme ajuste fino de escopo.</p>
 
